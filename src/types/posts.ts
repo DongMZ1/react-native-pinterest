@@ -6,6 +6,8 @@ export type PostCommentType = {
     content: string,
     location: string,
     auther_image_url: string,
+    like_count: number,
+    is_liked: boolean,
     replys : {
         from_auther_name: string,
         from_auth_id: string,
