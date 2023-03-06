@@ -11,6 +11,7 @@ import { useSwipe } from "../../utility/hooks/useSwipe";
 import AntIcon from 'react-native-vector-icons/AntDesign'
 import Entypo from 'react-native-vector-icons/Entypo'
 import Feather from 'react-native-vector-icons/Feather'
+import useIsFirstRender from "../../utility/hooks/useIsFirstRendering";
 
 export const PostDetail = () => {
     const id = useRoute<RouteProp<AppRoutesType, "PostDetail">>().params.post_id
@@ -19,6 +20,7 @@ export const PostDetail = () => {
     const discoverPosts = useAppSelector(selectPostsDiscover)
     const nearbyPosts = useAppSelector(selectPostsNearby)
     const selectedPost = [...discoverPosts, ...nearbyPosts].find(each => each.id === id)
+    const isFirstRendering = useIsFirstRender()
     const { onTouchStart, onTouchEnd } = useSwipe(undefined, () => navigation.goBack(), 5)
     const [commentsDisplayIndex, setcommentsDisplayIndex] = useState(10)
     const [commentID, setcommentID] = useState('')
@@ -28,10 +30,12 @@ export const PostDetail = () => {
     const textInputRef = useRef<TextInput>(null)
 
     useEffect(() => {
-        if (isFocusKeyboardAvoidView) {
-            textInputRef.current?.focus()
-        }else{
-            textInputRef.current?.blur()
+        if (!isFirstRendering) {
+            if (isFocusKeyboardAvoidView) {
+                textInputRef.current?.focus()
+            } else {
+                textInputRef.current?.blur()
+            }
         }
     }, [isFocusKeyboardAvoidView])
 
@@ -67,7 +71,7 @@ export const PostDetail = () => {
     const updatePostComment = () => {
         setcommentID('')
         setisFocusKeyboardAvoidView(false)
-    } 
+    }
     return <>
         <View style={{ width: '100%', height: 60, flexDirection: 'row' }}>
             <Pressable onPress={() => navigation.goBack()} style={{ width: '15%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
@@ -122,7 +126,7 @@ export const PostDetail = () => {
                     value={postComment}
                     onChangeText={v => setpostComment(v)}
                     style={{ backgroundColor: 'lavenderblush', borderRadius: 15, height: '100%', flex: 1, paddingHorizontal: 15 }} />
-                <Pressable onPress={updatePostComment} style={{ flex: 0.2, flexDirection:'row', alignItems: 'center', justifyContent: 'center' }}><Feather name="send" size={25}></Feather></Pressable>
+                <Pressable onPress={updatePostComment} style={{ flex: 0.2, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}><Feather name="send" size={25}></Feather></Pressable>
             </View>
         </KeyboardAvoidingView>
     </>
