@@ -7,7 +7,7 @@ import { debounce } from '../../../utility/helpers/debounce-throttle';
 import { useAppDispatch, useAppSelector } from '../../../redux/store';
 import { addPosts, selectPostsNearby, setPosts } from '../../../redux/slices/postsSlice';
 import { ScaledImage } from '../../../shared/UIComponent/ScaledImage/ScaledImage';
-import { AntDesign } from '@expo/vector-icons'
+import  AntDesign from 'react-native-vector-icons/AntDesign' 
 import { StarToSave } from '../../../shared/UIComponent/StarToSave/StarToSave';
 export const Nearby = () => {
     const dispatch = useAppDispatch()

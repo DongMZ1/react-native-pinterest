@@ -1,4 +1,4 @@
-import { AntDesign } from '@expo/vector-icons'
+import AntDesign from 'react-native-vector-icons/AntDesign'
 import { useEffect, useRef } from 'react'
 import {Animated, Easing, GestureResponderEvent, StyleProp, TouchableOpacity, View, ViewStyle} from 'react-native'
 import useIsFirstRender from '../../../utility/hooks/useIsFirstRendering'

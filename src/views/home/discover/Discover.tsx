@@ -7,7 +7,6 @@ import { debounce } from '../../../utility/helpers/debounce-throttle';
 import { useAppDispatch, useAppSelector } from '../../../redux/store';
 import { addPosts, selectPostsDiscover, setPosts } from '../../../redux/slices/postsSlice';
 import { ScaledImage } from '../../../shared/UIComponent/ScaledImage/ScaledImage';
-import { AntDesign } from '@expo/vector-icons'
 import { StarToSave } from '../../../shared/UIComponent/StarToSave/StarToSave';
 
 export const Discover = () => {

@@ -4,10 +4,12 @@ import { Discover } from './discover/Discover';
 import { Nearby } from './nearby/Nearby';
 import { AppRoutesType } from '../../routes';
 import { HomeRoutes } from '../../routes/homeRoutes/homeRoutes';
-import { Entypo, Feather, Ionicons } from '@expo/vector-icons'; 
 import { authService } from '../../service/authService/authService';
 import { MaterialTopTabBar } from '@react-navigation/material-top-tabs';
-import { AntDesign } from '@expo/vector-icons'; 
+import  AntDesign  from 'react-native-vector-icons/AntDesign'  
+import Entypo from 'react-native-vector-icons/Entypo'
+import Feather from 'react-native-vector-icons/Feather'
+import Ionicons from 'react-native-vector-icons/Ionicons'
 import { HomePageCustomTabBar } from './homePageCustomTabBar/HomePageCustomTabBar';
 export const Home = () => {
     const route = useRoute<RouteProp<AppRoutesType, "Home">>()

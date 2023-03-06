@@ -1,6 +1,6 @@
 import { MaterialTopTabBarProps } from '@react-navigation/material-top-tabs';
 import { Animated, View, TouchableOpacity, Text } from 'react-native';
-import { FontAwesome5 } from '@expo/vector-icons'; 
+import Icon from 'react-native-vector-icons/FontAwesome5'
 
 export function HomePageCustomTabBar({ state, descriptors, navigation, position } : MaterialTopTabBarProps) {
   return (
@@ -64,7 +64,7 @@ export function HomePageCustomTabBar({ state, descriptors, navigation, position 
         );
       })}
       </View>
-      <View style={{width: '25%', flexDirection: 'row', marginBottom:5, justifyContent: 'center'}}><FontAwesome5 name="search" size={20} color="grey" /></View>
+      <View style={{width: '25%', flexDirection: 'row', marginBottom:5, justifyContent: 'center'}}><Icon name="search" size={20} color="grey" /></View>
     </View>
   );
 }

@@ -1,5 +1,4 @@
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native"
-import { AntDesign } from '@expo/vector-icons';
 import { AppRoutesType } from "../../routes"
 import { Pressable, ScrollView, View, Text, TextInput, KeyboardAvoidingView } from "react-native"
 import { useAppDispatch, useAppSelector } from "../../redux/store";
@@ -7,10 +6,10 @@ import { selectPostsDiscover, selectPostsNearby, setPosts } from "../../redux/sl
 import { Carousel } from "../../shared/UIComponent/Carousel/Carousel";
 import { ScaledImage } from "../../shared/UIComponent/ScaledImage/ScaledImage";
 import { StarToSave } from "../../shared/UIComponent/StarToSave/StarToSave";
-import { Entypo } from '@expo/vector-icons';
 import { useEffect, useRef, useState } from "react";
 import { useSwipe } from "../../utility/hooks/useSwipe";
-
+import AntIcon from 'react-native-vector-icons/AntDesign'
+import Entypo from 'react-native-vector-icons/Entypo'
 
 export const PostDetail = () => {
     const id = useRoute<RouteProp<AppRoutesType, "PostDetail">>().params.post_id
@@ -62,7 +61,7 @@ export const PostDetail = () => {
     return <>
         <View style={{ width: '100%', height: 60, flexDirection: 'row' }}>
             <Pressable onPress={() => navigation.goBack()} style={{ width: '15%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-                <AntDesign name="back" size={24} color="black" />
+                <AntIcon name="back" size={24} color="black" />
             </Pressable>
             <View style={{ width: '10%', flexDirection: 'row', alignItems: 'center' }}>
                 <ScaledImage source={{ uri: selectedPost?.auther_image_url }} containerStyle={{ width: 30 }} style={{ borderRadius: 15 }}></ScaledImage>
