@@ -12,6 +12,7 @@ import AntIcon from 'react-native-vector-icons/AntDesign'
 import Entypo from 'react-native-vector-icons/Entypo'
 import Feather from 'react-native-vector-icons/Feather'
 import useIsFirstRender from "../../utility/hooks/useIsFirstRendering";
+import { faker } from "@faker-js/faker";
 
 export const PostDetail = () => {
     const id = useRoute<RouteProp<AppRoutesType, "PostDetail">>().params.post_id
@@ -22,22 +23,11 @@ export const PostDetail = () => {
     const selectedPost = [...discoverPosts, ...nearbyPosts].find(each => each.id === id)
     const isFirstRendering = useIsFirstRender()
     const { onTouchStart, onTouchEnd } = useSwipe(undefined, () => navigation.goBack(), 5)
-    const [commentsDisplayIndex, setcommentsDisplayIndex] = useState(10)
+    const [commentsDisplayIndex, setcommentsDisplayIndex] = useState(100)
     const [commentID, setcommentID] = useState('')
 
     const [postComment, setpostComment] = useState('')
-    const [isFocusKeyboardAvoidView, setisFocusKeyboardAvoidView] = useState(false)
     const textInputRef = useRef<TextInput>(null)
-
-    useEffect(() => {
-        if (!isFirstRendering) {
-            if (isFocusKeyboardAvoidView) {
-                textInputRef.current?.focus()
-            } else {
-                textInputRef.current?.blur()
-            }
-        }
-    }, [isFocusKeyboardAvoidView])
 
     const savePost = (saved: boolean) => {
         if (discoverPosts.find(each => each.id === id)) {
@@ -69,8 +59,56 @@ export const PostDetail = () => {
     }
 
     const updatePostComment = () => {
+        if (!commentID && postComment) {
+            if (discoverPosts.find(each => each.id === id)) {
+                const newDiscoverPosts = discoverPosts.map(each => {
+                    return {
+                        ...each,
+                        comments: [{
+                            time: faker.date.recent().toDateString(),
+                            auther_id: 'you',
+                            auther_name: 'react-nativer ( yourself )',
+                            id: faker.random.alpha(20),
+                            content: postComment,
+                            location: 'vancouver',
+                            like_count: Math.floor(Math.random() * 1000),
+                            is_liked: false,
+                            auther_image_url: faker.image.people(500, 500, false),
+                            replys: []
+                        }, ...each.comments]
+                    }
+                })
+                dispatch(setPosts({
+                    type: 'DiscoverPosts',
+                    payload: newDiscoverPosts
+                }))
+            }
+            if (nearbyPosts.find(each => each.id === id)) {
+                const newNearbyPosts = nearbyPosts.map(each => {
+                    return {
+                        ...each,
+                        comments: [{
+                            time: faker.date.recent().toDateString(),
+                            auther_id: 'you',
+                            auther_name: 'react-nativer ( yourself )',
+                            id: faker.random.alpha(20),
+                            content: postComment,
+                            location: 'vancouver',
+                            like_count: Math.floor(Math.random() * 1000),
+                            is_liked: false,
+                            auther_image_url: faker.image.people(500, 500, false),
+                            replys: []
+                        }, ...each.comments]
+                    }
+                })
+                dispatch(setPosts({
+                    type: 'NearbyPosts',
+                    payload: newNearbyPosts
+                }))
+            }
+        }
         setcommentID('')
-        setisFocusKeyboardAvoidView(false)
+        textInputRef.current?.blur()
     }
     return <>
         <View style={{ width: '100%', height: 60, flexDirection: 'row' }}>
@@ -96,37 +134,36 @@ export const PostDetail = () => {
                 <Text style={{ fontSize: 12, paddingVertical: 15, color: 'grey' }}>Edit : {selectedPost?.time}</Text>
                 <View style={{ height: 1, backgroundColor: 'lightgray', marginBottom: 15 }}></View>
                 <Pressable onPress={() => {
-                    setisFocusKeyboardAvoidView(true)
+                    textInputRef.current?.focus()
                 }} style={{ height: 40, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 15, backgroundColor: 'lavenderblush', borderRadius: 15, width: '100%', marginTop: 5 }}><Text style={{ color: 'lightgrey' }}>Share Your Opinion</Text></Pressable>
             </View>
             {
-                selectedPost?.comments.slice(0, commentsDisplayIndex).map(each => <View id={each.id} style={{ flexDirection: 'row', padding: 15 }}>
+                selectedPost?.comments.slice(0, commentsDisplayIndex).map(each => <View key={each.id} style={{ flexDirection: 'row', paddingHorizontal: 15 }}>
                     <Pressable key={each.id} onPress={() => {
                         setcommentID(each.id);
-                        setisFocusKeyboardAvoidView(true)
                     }} style={{ width: '100%', flexDirection: 'row' }}>
                         <View style={{ width: '10%', flexDirection: 'row', alignItems: 'center' }}>
                             <ScaledImage source={{ uri: each?.auther_image_url }} containerStyle={{ width: 30 }} style={{ borderRadius: 15 }}></ScaledImage>
                         </View>
-                        <View style={{ width: '90%', flexDirection: 'column', justifyContent: 'center', paddingLeft: 10 }} >
-                            <Text style={{ fontSize: 12, color: 'grey' }}>{each?.auther_name}</Text>
-                            <Text style={{ fontSize: 14, paddingVertical: 5 }}>{each?.content}</Text>
-                            <Text style={{ fontSize: 12, color: 'grey' }}>{each.time} <Entypo name="location-pin" size={14} color="grey" />{selectedPost?.location}</Text>
+                        <View style={{ width: '90%', flexDirection: 'row', paddingLeft: 10, paddingVertical: 15, borderBottomWidth: 1, borderBottomColor: 'lightcyan' }} >
+                            <View style={{width: '90%'}}>
+                                <Text style={{ fontSize: 12, color: 'grey' }}>{each?.auther_name}</Text>
+                                <Text style={{ fontSize: 14, paddingVertical: 5 }}>{each?.content}</Text>
+                                <Text style={{ fontSize: 12, color: 'grey' }}>{each.time} <Entypo name="location-pin" size={14} color="grey" />{selectedPost?.location}</Text>
+                            </View>
                         </View>
                     </Pressable>
                 </View>)
             }
         </ScrollView>
-        <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={50}>
+        <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={60}>
             <View style={{ height: 40, paddingHorizontal: 10, paddingTop: 3, flexDirection: 'row' }}>
                 <TextInput
-                    onFocus={() => setisFocusKeyboardAvoidView(true)}
-                    onBlur={() => setisFocusKeyboardAvoidView(false)}
                     ref={textInputRef} placeholder={commentID ? `Reply @${selectedPost?.comments.find(each => each.id === commentID)?.auther_name}` : "Share Your Opinion"}
                     value={postComment}
                     onChangeText={v => setpostComment(v)}
                     style={{ backgroundColor: 'lavenderblush', borderRadius: 15, height: '100%', flex: 1, paddingHorizontal: 15 }} />
-                <Pressable onPress={updatePostComment} style={{ flex: 0.2, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}><Feather name="send" size={25}></Feather></Pressable>
+                <Pressable onPress={() => updatePostComment()} style={{ flex: 0.2, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}><Feather name="send" size={25}></Feather></Pressable>
             </View>
         </KeyboardAvoidingView>
     </>
