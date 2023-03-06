@@ -28,6 +28,8 @@ export const getAllPostsApi = async ({ pageNum, type, filter }: { pageNum: numbe
                     auther_name: faker.name.fullName(),
                     id: faker.random.alpha(20),
                     content: faker.lorem.sentences(1),
+                    location: faker.address.cityName(),
+                    auther_image_url: faker.image.people(500, 500, true),
                     replys: []
                 }
             })

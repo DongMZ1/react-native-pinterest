@@ -4,6 +4,8 @@ export type PostCommentType = {
     auther_name: string
     id: string
     content: string,
+    location: string,
+    auther_image_url: string,
     replys : {
         from_auther_name: string,
         from_auth_id: string,
