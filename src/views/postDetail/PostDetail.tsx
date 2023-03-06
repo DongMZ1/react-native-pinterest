@@ -100,7 +100,7 @@ export const PostDetail = () => {
                 }} style={{ height: 40, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 15, backgroundColor: 'lavenderblush', borderRadius: 15, width: '100%', marginTop: 5 }}><Text style={{ color: 'lightgrey' }}>Share Your Opinion</Text></Pressable>
             </View>
             {
-                selectedPost?.comments.slice(0, commentsDisplayIndex).map(each => <View style={{ flexDirection: 'row', padding: 15 }}>
+                selectedPost?.comments.slice(0, commentsDisplayIndex).map(each => <View id={each.id} style={{ flexDirection: 'row', padding: 15 }}>
                     <Pressable key={each.id} onPress={() => {
                         setcommentID(each.id);
                         setisFocusKeyboardAvoidView(true)
