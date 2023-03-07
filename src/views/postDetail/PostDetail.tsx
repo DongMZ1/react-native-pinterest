@@ -23,7 +23,7 @@ export const PostDetail = () => {
     const selectedPost = [...discoverPosts, ...nearbyPosts].find(each => each.id === id)
     const isFirstRendering = useIsFirstRender()
     const { onTouchStart, onTouchEnd } = useSwipe(undefined, () => navigation.goBack(), 5)
-    const [commentsDisplayIndex, setcommentsDisplayIndex] = useState(100)
+    const [commentsDisplayIndex, setcommentsDisplayIndex] = useState(10)
     const [commentID, setcommentID] = useState('')
 
     const [postComment, setpostComment] = useState('')
@@ -125,7 +125,15 @@ export const PostDetail = () => {
             </View>
             <View style={{ width: '20%', flexDirection: 'row', alignItems: 'center' }}><StarToSave size={25} onPress={(saved) => savePost(saved)} isSaved={selectedPost?.collected ? true : false} /></View>
         </View>
-        <ScrollView scrollEnabled style={{ flex: 1 }}>
+        <ScrollView
+            onScroll={(e) => {
+                if (e.nativeEvent.contentOffset.y + e.nativeEvent.layoutMeasurement.height > e.nativeEvent.contentSize.height * 0.9) {
+                    if (selectedPost?.comments.length && commentsDisplayIndex < selectedPost?.comments.length) {
+                        setcommentsDisplayIndex(state => state + 10)
+                    }
+                }
+            }}
+            scrollEnabled style={{ flex: 1 }}>
             {
                 selectedPost && <View><Carousel images={selectedPost.images} /></View>
             }
@@ -147,18 +155,21 @@ export const PostDetail = () => {
                             <ScaledImage source={{ uri: each?.auther_image_url }} containerStyle={{ width: 30 }} style={{ borderRadius: 15 }}></ScaledImage>
                         </View>
                         <View style={{ width: '90%', flexDirection: 'row', paddingLeft: 10, paddingVertical: 15, borderBottomWidth: 1, borderBottomColor: 'lightcyan' }} >
-                            <View style={{width: '90%'}}>
+                            <View style={{ width: '90%' }}>
                                 <Text style={{ fontSize: 12, color: 'grey' }}>{each?.auther_name}</Text>
                                 <Text style={{ fontSize: 14, paddingVertical: 5 }}>{each?.content}</Text>
                                 <Text style={{ fontSize: 12, color: 'grey' }}>{each.time} <Entypo name="location-pin" size={14} color="grey" />{each?.location}</Text>
                             </View>
-                            <View style={{width: '10%', flexDirection: 'column', alignItems: 'center', paddingTop: 10}}>
+                            <View style={{ width: '10%', flexDirection: 'column', alignItems: 'center', paddingTop: 10 }}>
                                 <AntIcon name="hearto" size={15}></AntIcon>
-                                {each.like_count > 0 ? <Text style={{fontSize: 10, marginTop: 10}}>{each.like_count}</Text> : null}
+                                {each.like_count > 0 ? <Text style={{ fontSize: 10, marginTop: 10 }}>{each.like_count}</Text> : null}
                             </View>
                         </View>
                     </Pressable>
                 </View>)
+            }
+            {
+                selectedPost?.comments.length as number <= commentsDisplayIndex ? <View style={{width: '100%', flexDirection:'row', justifyContent: 'center', paddingVertical: 30}}><Text style={{fontSize: 10, color: 'grey'}}>-- THE END --</Text></View> : null
             }
         </ScrollView>
         <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={60}>
@@ -168,7 +179,7 @@ export const PostDetail = () => {
                     value={postComment}
                     onChangeText={v => setpostComment(v)}
                     style={{ backgroundColor: 'lavenderblush', borderRadius: 15, height: '100%', flex: 1, paddingHorizontal: 15 }} />
-                <Pressable onPress={() => updatePostComment()} style={{ flex: 0.2, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}><Feather name="send" size={25}></Feather></Pressable>
+                <Pressable onPress={() => updatePostComment()} style={{ flex: 0.2, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}><Feather color={'grey'} name="send" size={25}></Feather></Pressable>
             </View>
         </KeyboardAvoidingView>
     </>
