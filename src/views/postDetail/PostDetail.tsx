@@ -1,6 +1,6 @@
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native"
 import { AppRoutesType } from "../../routes"
-import { Pressable, ScrollView, View, Text, TextInput, KeyboardAvoidingView } from "react-native"
+import { Pressable, ScrollView, View, Text, TextInput, KeyboardAvoidingView, Animated } from "react-native"
 import { useAppDispatch, useAppSelector } from "../../redux/store";
 import { selectPostsDiscover, selectPostsNearby, setPosts } from "../../redux/slices/postsSlice";
 import { Carousel } from "../../shared/UIComponent/Carousel/Carousel";
@@ -13,6 +13,7 @@ import Entypo from 'react-native-vector-icons/Entypo'
 import Feather from 'react-native-vector-icons/Feather'
 import useIsFirstRender from "../../utility/hooks/useIsFirstRendering";
 import { faker } from "@faker-js/faker";
+import { selectKeyboard, selectSafeAreaViewDimension } from "../../redux/slices/utilitySlice";
 
 export const PostDetail = () => {
     const id = useRoute<RouteProp<AppRoutesType, "PostDetail">>().params.post_id
@@ -20,14 +21,22 @@ export const PostDetail = () => {
     const dispatch = useAppDispatch()
     const discoverPosts = useAppSelector(selectPostsDiscover)
     const nearbyPosts = useAppSelector(selectPostsNearby)
+    const headerHeight = 60
+    const footerHeight = 50
+    const keyboardHeight = useAppSelector(selectKeyboard).keyboardheight
+    const scrollHeight = 763 - keyboardHeight - headerHeight - footerHeight
+    const currentScrollHeight = useRef(new Animated.Value(scrollHeight)).current
     const selectedPost = [...discoverPosts, ...nearbyPosts].find(each => each.id === id)
-    const isFirstRendering = useIsFirstRender()
     const { onTouchStart, onTouchEnd } = useSwipe(undefined, () => navigation.goBack(), 5)
     const [commentsDisplayIndex, setcommentsDisplayIndex] = useState(10)
     const [commentID, setcommentID] = useState('')
 
     const [postComment, setpostComment] = useState('')
     const textInputRef = useRef<TextInput>(null)
+
+    useEffect(() => {
+        Animated.timing(currentScrollHeight, { toValue: scrollHeight, useNativeDriver: false, duration: 150 }).start()
+    }, [scrollHeight])
 
     const savePost = (saved: boolean) => {
         if (discoverPosts.find(each => each.id === id)) {
@@ -152,8 +161,11 @@ export const PostDetail = () => {
             }
         }
     }
-    return <>
-        <View style={{ width: '100%', height: 60, flexDirection: 'row' }}>
+    return <View style={{ flex: 1 }} onLayout={event => {
+        const { width, height } = event.nativeEvent.layout;
+        console.log(width, height)
+    }}>
+        <View style={{ width: '100%', height: headerHeight, flexDirection: 'row' }}>
             <Pressable onPress={() => navigation.goBack()} style={{ width: '15%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
                 <AntIcon name="back" size={24} color="black" />
             </Pressable>
@@ -166,65 +178,66 @@ export const PostDetail = () => {
             </View>
             <View style={{ width: '20%', flexDirection: 'row', alignItems: 'center' }}><StarToSave size={25} onPress={(saved) => savePost(saved)} isSaved={selectedPost?.collected ? true : false} /></View>
         </View>
-        <ScrollView
-            onScroll={(e) => {
-                if (e.nativeEvent.contentOffset.y + e.nativeEvent.layoutMeasurement.height > e.nativeEvent.contentSize.height * 0.9) {
-                    if (selectedPost?.comments.length && commentsDisplayIndex < selectedPost?.comments.length) {
-                        setcommentsDisplayIndex(state => state + 10)
+        <Animated.View style={{height: currentScrollHeight}}>
+            <ScrollView
+                onScroll={(e) => {
+                    if (e.nativeEvent.contentOffset.y + e.nativeEvent.layoutMeasurement.height > e.nativeEvent.contentSize.height * 0.9) {
+                        if (selectedPost?.comments.length && commentsDisplayIndex < selectedPost?.comments.length) {
+                            setcommentsDisplayIndex(state => state + 10)
+                        }
                     }
+                }}
+                scrollEventThrottle={20}
+                scrollEnabled
+                style={{ flex: 1 }}>
+                {
+                    selectedPost && <View><Carousel images={selectedPost.images} /></View>
                 }
-            }}
-            scrollEventThrottle={20}
-            scrollEnabled style={{ flex: 1 }}>
-            {
-                selectedPost && <View><Carousel images={selectedPost.images} /></View>
-            }
-            <View onTouchStart={onTouchStart} onTouchEnd={onTouchEnd} style={{ paddingHorizontal: 15 }}>
-                <Text style={{ fontSize: 20, fontWeight: '600', paddingVertical: 15 }}>{selectedPost?.title}</Text>
-                <Text style={{ fontSize: 14, }}>{selectedPost?.content}</Text>
-                <Text style={{ fontSize: 12, paddingVertical: 15, color: 'grey' }}>Edit : {selectedPost?.time}</Text>
-                <View style={{ height: 1, backgroundColor: 'lightgray', marginBottom: 15 }}></View>
-                <Pressable onPress={() => {
-                    textInputRef.current?.focus()
-                }} style={{ height: 40, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 15, backgroundColor: 'lavenderblush', borderRadius: 15, width: '100%', marginTop: 5 }}><Text style={{ color: 'lightgrey' }}>Share Your Opinion</Text></Pressable>
-            </View>
-            {
-                selectedPost?.comments.slice(0, commentsDisplayIndex).map(eachComm => <View key={eachComm.id} style={{ flexDirection: 'row', paddingHorizontal: 15 }}>
-                    <View key={eachComm.id} style={{ width: '100%', flexDirection: 'row' }}>
-                        <View style={{ width: '10%', flexDirection: 'row', alignItems: 'center' }}>
-                            <ScaledImage source={{ uri: eachComm?.auther_image_url }} containerStyle={{ width: 30 }} style={{ borderRadius: 15 }}></ScaledImage>
-                        </View>
-                        <View style={{ width: '90%', flexDirection: 'row', paddingLeft: 10, paddingVertical: 15, borderBottomWidth: 1, borderBottomColor: 'lightcyan' }} >
-                            <Pressable onPress={() => {
-                                setcommentID(eachComm.id);
-                                textInputRef.current?.focus()
-                            }} style={{ width: '90%' }}>
-                                <Text style={{ fontSize: 12, color: 'grey' }}>{eachComm?.auther_name}</Text>
-                                <Text style={{ fontSize: 14, paddingVertical: 5 }}>{eachComm?.content}</Text>
-                                <Text style={{ fontSize: 12, color: 'grey' }}>{eachComm.time} <Entypo name="location-pin" size={14} color="grey" />{eachComm?.location}</Text>
-                            </Pressable>
-                            <View style={{ width: '10%', flexDirection: 'column', alignItems: 'center', paddingTop: 10 }}>
-                                <Pressable onPress={e => flipLike(eachComm.id)}><AntIcon name={eachComm.is_liked ? "heart" : "hearto"} color={eachComm.is_liked ? 'red' : 'grey'} size={15}></AntIcon></Pressable>
-                                {eachComm.like_count > 0 ? <Text style={{ fontSize: 10, marginTop: 10, color: eachComm.is_liked ? 'red' : 'grey' }}>{eachComm.like_count}</Text> : null}
+                <View onTouchStart={onTouchStart} onTouchEnd={onTouchEnd} style={{ paddingHorizontal: 15 }}>
+                    <Text style={{ fontSize: 20, fontWeight: '600', paddingVertical: 15 }}>{selectedPost?.title}</Text>
+                    <Text style={{ fontSize: 14, }}>{selectedPost?.content}</Text>
+                    <Text style={{ fontSize: 12, paddingVertical: 15, color: 'grey' }}>Edit : {selectedPost?.time}</Text>
+                    <View style={{ height: 1, backgroundColor: 'lightgray', marginBottom: 15 }}></View>
+                    <Pressable onPress={() => {
+                        textInputRef.current?.focus()
+                    }} style={{ height: 40, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 15, backgroundColor: 'lavenderblush', borderRadius: 15, width: '100%', marginTop: 5 }}><Text style={{ color: 'lightgrey' }}>Share Your Opinion</Text></Pressable>
+                </View>
+                {
+                    selectedPost?.comments.slice(0, commentsDisplayIndex).map(eachComm => <View key={eachComm.id} style={{ flexDirection: 'row', paddingHorizontal: 15 }}>
+                        <View key={eachComm.id} style={{ width: '100%', flexDirection: 'row' }}>
+                            <View style={{ width: '10%', flexDirection: 'row', alignItems: 'center' }}>
+                                <ScaledImage source={{ uri: eachComm?.auther_image_url }} containerStyle={{ width: 30 }} style={{ borderRadius: 15 }}></ScaledImage>
+                            </View>
+                            <View style={{ width: '90%', flexDirection: 'row', paddingLeft: 10, paddingVertical: 15, borderBottomWidth: 1, borderBottomColor: 'lightcyan' }} >
+                                <Pressable onPress={() => {
+                                    setcommentID(eachComm.id);
+                                    textInputRef.current?.focus()
+                                }} style={{ width: '90%' }}>
+                                    <Text style={{ fontSize: 12, color: 'grey' }}>{eachComm?.auther_name}</Text>
+                                    <Text style={{ fontSize: 14, paddingVertical: 5 }}>{eachComm?.content}</Text>
+                                    <Text style={{ fontSize: 12, color: 'grey' }}>{eachComm.time} <Entypo name="location-pin" size={14} color="grey" />{eachComm?.location}</Text>
+                                </Pressable>
+                                <View style={{ width: '10%', flexDirection: 'column', alignItems: 'center', paddingTop: 10 }}>
+                                    <Pressable onPress={e => flipLike(eachComm.id)}><AntIcon name={eachComm.is_liked ? "heart" : "hearto"} color={eachComm.is_liked ? 'red' : 'grey'} size={15}></AntIcon></Pressable>
+                                    {eachComm.like_count > 0 ? <Text style={{ fontSize: 10, marginTop: 10, color: eachComm.is_liked ? 'red' : 'grey' }}>{eachComm.like_count}</Text> : null}
+                                </View>
                             </View>
                         </View>
-                    </View>
-                </View >)
-            }
-            {
-                selectedPost?.comments.length as number <= commentsDisplayIndex ? <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'center', paddingVertical: 30 }}><Text style={{ fontSize: 10, color: 'grey' }}>-- THE END --</Text></View> : null
-            }
-        </ScrollView >
-        <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={60}>
-            <View style={{ height: 40, paddingHorizontal: 10, paddingTop: 3, flexDirection: 'row' }}>
-                <TextInput
-                    onBlur={() => setcommentID('')}
-                    ref={textInputRef} placeholder={commentID ? `Reply @${selectedPost?.comments.find(each => each.id === commentID)?.auther_name}` : "Share Your Opinion"}
-                    value={postComment}
-                    onChangeText={v => setpostComment(v)}
-                    style={{ backgroundColor: 'lavenderblush', borderRadius: 15, height: '100%', flex: 1, paddingHorizontal: 15 }} />
-                <Pressable onPress={() => addPostComment()} style={{ flex: 0.2, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}><Feather color={'grey'} name="send" size={25}></Feather></Pressable>
-            </View>
-        </KeyboardAvoidingView>
-    </>
+                    </View >)
+                }
+                {
+                    selectedPost?.comments.length as number <= commentsDisplayIndex ? <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'center', paddingVertical: 30 }}><Text style={{ fontSize: 10, color: 'grey' }}>-- THE END --</Text></View> : null
+                }
+            </ScrollView >
+        </Animated.View>
+        <View style={{ height: footerHeight, paddingHorizontal: 10, paddingVertical: 5, flexDirection: 'row' }}>
+            <TextInput
+                onBlur={() => setcommentID('')}
+                ref={textInputRef} placeholder={commentID ? `Reply @${selectedPost?.comments.find(each => each.id === commentID)?.auther_name}` : "Share Your Opinion"}
+                value={postComment}
+                onChangeText={v => setpostComment(v)}
+                style={{ backgroundColor: 'lavenderblush', borderRadius: 15, height: '100%', flex: 1, paddingHorizontal: 15 }} />
+            <Pressable onPress={() => addPostComment()} style={{ flex: 0.2, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}><Feather color={'grey'} name="send" size={25}></Feather></Pressable>
+        </View>
+    </View>
 }

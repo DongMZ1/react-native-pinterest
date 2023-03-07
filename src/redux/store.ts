@@ -3,11 +3,12 @@ import { TypedUseSelectorHook, useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
 import authSlice from './slices/authSlice';
 import postsSlice from './slices/postsSlice'
-
+import utilitySlice from './slices/utilitySlice'
 export const store = configureStore({
     reducer: {
         authSlice,
-        postsSlice
+        postsSlice,
+        utilitySlice
     },
 })
 

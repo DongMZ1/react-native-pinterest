@@ -1,22 +1,48 @@
-import { SafeAreaView, Text, View } from 'react-native'
+import { Keyboard, LayoutChangeEvent, Platform, SafeAreaView, Text, View } from 'react-native'
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Login } from './src/views/login/Login';
 import { Home } from './src/views/home/Home';
 import { AppRoutes } from './src/routes';
-import { Provider } from 'react-redux';
+import { Provider, useDispatch } from 'react-redux';
 import { store, useAppSelector } from './src/redux/store';
 import { useEffect } from 'react';
 import { authService } from './src/service/authService/authService';
 import { selectAuthIsLogin } from './src/redux/slices/authSlice';
 import { PostDetail } from './src/views/postDetail/PostDetail';
+import { setKeyboardH, setSafeAreaViewDimension } from './src/redux/slices/utilitySlice';
 function App() {
     const isLogin = useAppSelector(selectAuthIsLogin)
+    const dispatch = useDispatch()
     useEffect(() => {
         authService.persistUserSession()
+        const keyboardDidShowListener = Keyboard.addListener(
+            Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
+            event => {
+              const { height } = event.endCoordinates;
+              dispatch(setKeyboardH(height-34));
+            }
+          );
+      
+          const keyboardDidHideListener = Keyboard.addListener(
+            Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide',
+            () => {
+                dispatch(setKeyboardH(0));
+            }
+          );
+
+        // Remove listeners on component unmount
+        return () => {
+            keyboardDidShowListener.remove();
+            keyboardDidHideListener.remove();
+        };
     }, [])
+    const onSafeAreaLayout = (event: LayoutChangeEvent) => {
+        const { height, width } = event.nativeEvent.layout;
+        dispatch(setSafeAreaViewDimension({ height, width }))
+    };
     return (
-        <SafeAreaView style={{ flex: 1 }}>
+        <SafeAreaView style={{ flex: 1 }} onLayout={onSafeAreaLayout}>
             <NavigationContainer theme={{ ...DefaultTheme, colors: { ...DefaultTheme.colors, background: 'white' } }}>
                 <AppRoutes.Navigator screenOptions={{ headerShown: false }} initialRouteName='Login' >
                     {isLogin ?
@@ -47,4 +73,8 @@ export default function Main() {
             </Provider>
         </>
     )
+}
+
+function setKeyboardHeight(height: number): any {
+    throw new Error('Function not implemented.');
 }
