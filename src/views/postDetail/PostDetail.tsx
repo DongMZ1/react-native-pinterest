@@ -149,31 +149,31 @@ export const PostDetail = () => {
             </View>
             {
                 selectedPost?.comments.slice(0, commentsDisplayIndex).map(each => <View key={each.id} style={{ flexDirection: 'row', paddingHorizontal: 15 }}>
-                    <Pressable key={each.id} onPress={() => {
-                        setcommentID(each.id);
-                        textInputRef.current?.focus()
-                    }} style={{ width: '100%', flexDirection: 'row' }}>
+                    <View key={each.id} style={{ width: '100%', flexDirection: 'row' }}>
                         <View style={{ width: '10%', flexDirection: 'row', alignItems: 'center' }}>
                             <ScaledImage source={{ uri: each?.auther_image_url }} containerStyle={{ width: 30 }} style={{ borderRadius: 15 }}></ScaledImage>
                         </View>
                         <View style={{ width: '90%', flexDirection: 'row', paddingLeft: 10, paddingVertical: 15, borderBottomWidth: 1, borderBottomColor: 'lightcyan' }} >
-                            <View style={{ width: '90%' }}>
+                            <Pressable onPress={() => {
+                                setcommentID(each.id);
+                                textInputRef.current?.focus()
+                            }} style={{ width: '90%' }}>
                                 <Text style={{ fontSize: 12, color: 'grey' }}>{each?.auther_name}</Text>
                                 <Text style={{ fontSize: 14, paddingVertical: 5 }}>{each?.content}</Text>
                                 <Text style={{ fontSize: 12, color: 'grey' }}>{each.time} <Entypo name="location-pin" size={14} color="grey" />{each?.location}</Text>
-                            </View>
+                            </Pressable>
                             <View style={{ width: '10%', flexDirection: 'column', alignItems: 'center', paddingTop: 10 }}>
-                                <AntIcon name="hearto" size={15}></AntIcon>
+                                <AntIcon name={each.is_liked ? "heart" : "hearto"} size={15}></AntIcon>
                                 {each.like_count > 0 ? <Text style={{ fontSize: 10, marginTop: 10 }}>{each.like_count}</Text> : null}
                             </View>
                         </View>
-                    </Pressable>
-                </View>)
+                    </View>
+                </View >)
             }
             {
-                selectedPost?.comments.length as number <= commentsDisplayIndex ? <View style={{width: '100%', flexDirection:'row', justifyContent: 'center', paddingVertical: 30}}><Text style={{fontSize: 10, color: 'grey'}}>-- THE END --</Text></View> : null
+                selectedPost?.comments.length as number <= commentsDisplayIndex ? <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'center', paddingVertical: 30 }}><Text style={{ fontSize: 10, color: 'grey' }}>-- THE END --</Text></View> : null
             }
-        </ScrollView>
+        </ScrollView >
         <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={60}>
             <View style={{ height: 40, paddingHorizontal: 10, paddingTop: 3, flexDirection: 'row' }}>
                 <TextInput
