@@ -68,10 +68,10 @@ export const PostDetail = () => {
                             time: faker.date.recent().toDateString(),
                             auther_id: 'you',
                             auther_name: 'react-nativer ( yourself )',
-                            id: faker.random.alpha(20),
+                            id: faker.random.alpha(20) + postComment,
                             content: postComment,
                             location: 'vancouver',
-                            like_count: Math.floor(Math.random() * 1000),
+                            like_count: 0,
                             is_liked: false,
                             auther_image_url: faker.image.people(500, 500, false),
                             replys: []
@@ -91,10 +91,10 @@ export const PostDetail = () => {
                             time: faker.date.recent().toDateString(),
                             auther_id: 'you',
                             auther_name: 'react-nativer ( yourself )',
-                            id: faker.random.alpha(20),
+                            id: faker.random.alpha(20) + postComment,
                             content: postComment,
                             location: 'vancouver',
-                            like_count: Math.floor(Math.random() * 1000),
+                            like_count: 0,
                             is_liked: false,
                             auther_image_url: faker.image.people(500, 500, false),
                             replys: []
@@ -108,6 +108,7 @@ export const PostDetail = () => {
             }
         }
         setcommentID('')
+        setpostComment('')
         textInputRef.current?.blur()
     }
     return <>
@@ -149,7 +150,11 @@ export const PostDetail = () => {
                             <View style={{width: '90%'}}>
                                 <Text style={{ fontSize: 12, color: 'grey' }}>{each?.auther_name}</Text>
                                 <Text style={{ fontSize: 14, paddingVertical: 5 }}>{each?.content}</Text>
-                                <Text style={{ fontSize: 12, color: 'grey' }}>{each.time} <Entypo name="location-pin" size={14} color="grey" />{selectedPost?.location}</Text>
+                                <Text style={{ fontSize: 12, color: 'grey' }}>{each.time} <Entypo name="location-pin" size={14} color="grey" />{each?.location}</Text>
+                            </View>
+                            <View style={{width: '10%', flexDirection: 'column', alignItems: 'center', paddingTop: 10}}>
+                                <AntIcon name="hearto" size={15}></AntIcon>
+                                {each.like_count > 0 ? <Text style={{fontSize: 10, marginTop: 10}}>{each.like_count}</Text> : null}
                             </View>
                         </View>
                     </Pressable>
