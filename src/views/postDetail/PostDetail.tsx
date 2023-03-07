@@ -111,6 +111,47 @@ export const PostDetail = () => {
         setpostComment('')
         textInputRef.current?.blur()
     }
+
+    const flipLike = (commentID: string, replyID?: string) => {
+        if (commentID && !replyID) {
+            if (discoverPosts.find(each => each.id === id)) {
+                const newDiscoverPosts = discoverPosts.map(each => {
+                    return each.id === id ? {
+                        ...each,
+                        comments: each.comments.map(eachComm => {
+                            return eachComm.id === commentID ? {
+                                ...eachComm,
+                                is_liked: !eachComm.is_liked,
+                                like_count: eachComm.is_liked ? eachComm.like_count - 1 : eachComm.like_count + 1
+                            } : eachComm
+                        })
+                    } : each
+                })
+                dispatch(setPosts({
+                    type: 'DiscoverPosts',
+                    payload: newDiscoverPosts
+                }))
+            }
+            if (nearbyPosts.find(each => each.id === id)) {
+                const newNearbyPosts = nearbyPosts.map(each => {
+                    return each.id === id ? {
+                        ...each,
+                        comments: each.comments.map(eachComm => {
+                            return eachComm.id === commentID ? {
+                                ...eachComm,
+                                is_liked: !eachComm.is_liked,
+                                like_count: eachComm.is_liked ? eachComm.like_count - 1 : eachComm.like_count + 1
+                            } : eachComm
+                        })
+                    } : each
+                })
+                dispatch(setPosts({
+                    type: 'NearbyPosts',
+                    payload: newNearbyPosts
+                }))
+            }
+        }
+    }
     return <>
         <View style={{ width: '100%', height: 60, flexDirection: 'row' }}>
             <Pressable onPress={() => navigation.goBack()} style={{ width: '15%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
@@ -148,23 +189,23 @@ export const PostDetail = () => {
                 }} style={{ height: 40, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 15, backgroundColor: 'lavenderblush', borderRadius: 15, width: '100%', marginTop: 5 }}><Text style={{ color: 'lightgrey' }}>Share Your Opinion</Text></Pressable>
             </View>
             {
-                selectedPost?.comments.slice(0, commentsDisplayIndex).map(each => <View key={each.id} style={{ flexDirection: 'row', paddingHorizontal: 15 }}>
-                    <View key={each.id} style={{ width: '100%', flexDirection: 'row' }}>
+                selectedPost?.comments.slice(0, commentsDisplayIndex).map(eachComm => <View key={eachComm.id} style={{ flexDirection: 'row', paddingHorizontal: 15 }}>
+                    <View key={eachComm.id} style={{ width: '100%', flexDirection: 'row' }}>
                         <View style={{ width: '10%', flexDirection: 'row', alignItems: 'center' }}>
-                            <ScaledImage source={{ uri: each?.auther_image_url }} containerStyle={{ width: 30 }} style={{ borderRadius: 15 }}></ScaledImage>
+                            <ScaledImage source={{ uri: eachComm?.auther_image_url }} containerStyle={{ width: 30 }} style={{ borderRadius: 15 }}></ScaledImage>
                         </View>
                         <View style={{ width: '90%', flexDirection: 'row', paddingLeft: 10, paddingVertical: 15, borderBottomWidth: 1, borderBottomColor: 'lightcyan' }} >
                             <Pressable onPress={() => {
-                                setcommentID(each.id);
+                                setcommentID(eachComm.id);
                                 textInputRef.current?.focus()
                             }} style={{ width: '90%' }}>
-                                <Text style={{ fontSize: 12, color: 'grey' }}>{each?.auther_name}</Text>
-                                <Text style={{ fontSize: 14, paddingVertical: 5 }}>{each?.content}</Text>
-                                <Text style={{ fontSize: 12, color: 'grey' }}>{each.time} <Entypo name="location-pin" size={14} color="grey" />{each?.location}</Text>
+                                <Text style={{ fontSize: 12, color: 'grey' }}>{eachComm?.auther_name}</Text>
+                                <Text style={{ fontSize: 14, paddingVertical: 5 }}>{eachComm?.content}</Text>
+                                <Text style={{ fontSize: 12, color: 'grey' }}>{eachComm.time} <Entypo name="location-pin" size={14} color="grey" />{eachComm?.location}</Text>
                             </Pressable>
                             <View style={{ width: '10%', flexDirection: 'column', alignItems: 'center', paddingTop: 10 }}>
-                                <AntIcon name={each.is_liked ? "heart" : "hearto"} size={15}></AntIcon>
-                                {each.like_count > 0 ? <Text style={{ fontSize: 10, marginTop: 10 }}>{each.like_count}</Text> : null}
+                                <Pressable onPress={e => flipLike(eachComm.id)}><AntIcon name={eachComm.is_liked ? "heart" : "hearto"} color={eachComm.is_liked ? 'red' : 'grey'} size={15}></AntIcon></Pressable>
+                                {eachComm.like_count > 0 ? <Text style={{ fontSize: 10, marginTop: 10, color: eachComm.is_liked ? 'red' : 'grey' }}>{eachComm.like_count}</Text> : null}
                             </View>
                         </View>
                     </View>
