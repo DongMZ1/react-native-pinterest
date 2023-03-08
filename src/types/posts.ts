@@ -8,12 +8,17 @@ export type PostCommentType = {
     auther_image_url: string,
     like_count: number,
     is_liked: boolean,
-    replys : {
-        from_auther_name: string,
-        from_auth_id: string,
+    replys: {
         time: string,
-        content: string,
+        auther_id: string,
+        auther_name: string
         id: string
+        content: string,
+        location: string,
+        auther_image_url: string,
+        like_count: number,
+        is_liked: boolean,
+        reply_to_auther_id: string
     }[]
 }
 
