@@ -2,7 +2,7 @@ import { RouteProp, useNavigation, useRoute } from "@react-navigation/native"
 import { AppRoutesType } from "../../routes"
 import { Pressable, ScrollView, View, Text, TextInput, KeyboardAvoidingView, Animated } from "react-native"
 import { useAppDispatch, useAppSelector } from "../../redux/store";
-import { addPostComment, savePost, selectPostsDiscover, selectPostsNearby, setPosts } from "../../redux/slices/postsSlice";
+import { addPostComment, savePost, selectPostsDiscover, selectPostsNearby, setCommentIsLiked, setPosts } from "../../redux/slices/postsSlice";
 import { Carousel } from "../../shared/UIComponent/Carousel/Carousel";
 import { ScaledImage } from "../../shared/UIComponent/ScaledImage/ScaledImage";
 import { StarToSave } from "../../shared/UIComponent/StarToSave/StarToSave";
@@ -53,40 +53,13 @@ export const PostDetail = () => {
         textInputRef.current?.blur()
     }
 
-    const flipCommentLike = (isLike: boolean, commentID: string, replyID?: string) => {
+    const flipCommentLike = (isLike: boolean, commentID: string) => {
         if (commentID) {
-            if (discoverPosts.find(each => each.id === id)) {
-                const newDiscoverPosts = produce(discoverPosts, draft => {
-                    const post = draft.find(each => each.id === id);
-                    const comment = post?.comments.find(eachComment => eachComment.id === commentID) as WritableDraft<PostCommentType>
-                    comment.is_liked = !comment.is_liked
-                    if (isLike) {
-                        comment.like_count++
-                    } else {
-                        comment.like_count--
-                    }
-                })
-                dispatch(setPosts({
-                    type: 'DiscoverPosts',
-                    payload: newDiscoverPosts
-                }))
-            }
-            if (nearbyPosts.find(each => each.id === id)) {
-                const newNearbyPosts = produce(nearbyPosts, draft => {
-                    const post = draft.find(each => each.id === id);
-                    const comment = post?.comments.find(eachComment => eachComment.id === commentID) as WritableDraft<PostCommentType>
-                    comment.is_liked = !comment.is_liked
-                    if (isLike) {
-                        comment.like_count++
-                    } else {
-                        comment.like_count--
-                    }
-                })
-                dispatch(setPosts({
-                    type: 'NearbyPosts',
-                    payload: newNearbyPosts
-                }))
-            }
+            dispatch(setCommentIsLiked({
+                is_liked: isLike,
+                post_id: selectedPost?.id!,
+                comment_id: commentID
+            }))
         }
     }
     return <View style={{ flex: 1 }} onLayout={event => {
@@ -171,4 +144,8 @@ export const PostDetail = () => {
             <Pressable onPress={() => addPostCommentContent()} style={{ flex: 0.2, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}><Feather color={'grey'} name="send" size={25}></Feather></Pressable>
         </View>
     </View>
+}
+
+function onCommentLikeChange(arg0: {}): any {
+    throw new Error("Function not implemented.");
 }
