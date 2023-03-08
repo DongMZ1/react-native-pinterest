@@ -1,38 +1,41 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 import { RootState } from '../store'
 import { PostType } from '../../types/posts'
+import { faker } from '@faker-js/faker'
+import produce from "immer"
+import { WritableDraft } from 'immer/dist/internal'
 
 type PostsSliceInitialStateType = {
-    discoverPosts : PostType[],
+    discoverPosts: PostType[],
     nearbyPosts: PostType[],
 }
 
-const PostsSliceInitialState : PostsSliceInitialStateType  = {
-    discoverPosts : [],
+const PostsSliceInitialState: PostsSliceInitialStateType = {
+    discoverPosts: [],
     nearbyPosts: [],
 }
 export const postsSlice = createSlice({
     name: 'posts',
     initialState: PostsSliceInitialState,
     reducers: {
-        addPosts: (state, action: PayloadAction<{type: 'DiscoverPosts' | 'NearbyPosts', payload: PostType[]}>) => {
-            if(action.payload.type === 'DiscoverPosts'){
+        addPosts: (state, action: PayloadAction<{ type: 'DiscoverPosts' | 'NearbyPosts', payload: PostType[] }>) => {
+            if (action.payload.type === 'DiscoverPosts') {
                 state.discoverPosts = [...state.discoverPosts, ...action.payload.payload]
             }
-            if(action.payload.type === 'NearbyPosts'){
+            if (action.payload.type === 'NearbyPosts') {
                 state.nearbyPosts = [...state.nearbyPosts, ...action.payload.payload]
             }
         },
-        setPosts: (state, action: PayloadAction<{type: 'DiscoverPosts' | 'NearbyPosts', payload: PostType[]}>) => {
-            if(action.payload.type === 'DiscoverPosts'){
+        setPosts: (state, action: PayloadAction<{ type: 'DiscoverPosts' | 'NearbyPosts', payload: PostType[] }>) => {
+            if (action.payload.type === 'DiscoverPosts') {
                 state.discoverPosts = action.payload.payload
             }
-            if(action.payload.type === 'NearbyPosts'){
+            if (action.payload.type === 'NearbyPosts') {
                 state.nearbyPosts = action.payload.payload
             }
         },
-        savePost: (state, action: PayloadAction<{saved: boolean, post_id: string}>) => {
-            const {saved, post_id} = action.payload
+        savePost: (state, action: PayloadAction<{ saved: boolean, post_id: string }>) => {
+            const { saved, post_id } = action.payload
             if (state.discoverPosts.find(each => each.id === post_id)) {
                 state.discoverPosts = state.discoverPosts.map(each => {
                     return {
@@ -51,11 +54,48 @@ export const postsSlice = createSlice({
                 })
                 return
             }
+        },
+        addPostComment: (state, action: PayloadAction<{ post_id: string, comment_content: string }>) => {
+            const { post_id, comment_content } = action.payload
+            if (state.discoverPosts.find(each => each.id === post_id)) {
+                state.discoverPosts = produce(state.discoverPosts, draft => {
+                    const post = draft.find(each => each.id === post_id) as PostType
+                    post.comments = [{
+                        time: faker.date.recent().toDateString(),
+                        auther_id: 'you',
+                        auther_name: 'react-nativer ( yourself )',
+                        id: faker.random.alpha(20) + comment_content,
+                        content: comment_content,
+                        location: 'vancouver',
+                        like_count: 0,
+                        is_liked: false,
+                        auther_image_url: faker.image.people(500, 500, false),
+                        replys: []
+                    }, ...post.comments]
+                })
+            }
+            if (state.nearbyPosts.find(each => each.id === post_id)) {
+                state.nearbyPosts = produce(state.nearbyPosts, draft => {
+                    const post = draft.find(each => each.id === post_id) as PostType
+                    post.comments = [{
+                        time: faker.date.recent().toDateString(),
+                        auther_id: 'you',
+                        auther_name: 'react-nativer ( yourself )',
+                        id: faker.random.alpha(20) + comment_content,
+                        content: comment_content,
+                        location: 'vancouver',
+                        like_count: 0,
+                        is_liked: false,
+                        auther_image_url: faker.image.people(500, 500, false),
+                        replys: []
+                    }, ...post.comments]
+                })
+            }
         }
     },
 })
 
-export const { addPosts, setPosts, savePost } = postsSlice.actions
-export const selectPostsDiscover = (state :RootState) => state.postsSlice.discoverPosts
+export const { addPosts, setPosts, savePost, addPostComment } = postsSlice.actions
+export const selectPostsDiscover = (state: RootState) => state.postsSlice.discoverPosts
 export const selectPostsNearby = (state: RootState) => state.postsSlice.nearbyPosts
 export default postsSlice.reducer

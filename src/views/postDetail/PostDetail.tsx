@@ -2,7 +2,7 @@ import { RouteProp, useNavigation, useRoute } from "@react-navigation/native"
 import { AppRoutesType } from "../../routes"
 import { Pressable, ScrollView, View, Text, TextInput, KeyboardAvoidingView, Animated } from "react-native"
 import { useAppDispatch, useAppSelector } from "../../redux/store";
-import { savePost, selectPostsDiscover, selectPostsNearby, setPosts } from "../../redux/slices/postsSlice";
+import { addPostComment, savePost, selectPostsDiscover, selectPostsNearby, setPosts } from "../../redux/slices/postsSlice";
 import { Carousel } from "../../shared/UIComponent/Carousel/Carousel";
 import { ScaledImage } from "../../shared/UIComponent/ScaledImage/ScaledImage";
 import { StarToSave } from "../../shared/UIComponent/StarToSave/StarToSave";
@@ -41,54 +41,12 @@ export const PostDetail = () => {
         Animated.timing(currentScrollHeight, { toValue: scrollHeight, useNativeDriver: false, duration: 150 }).start()
     }, [scrollHeight])
 
-    const addPostComment = () => {
-        if (!commentID && postComment) {
-            if (discoverPosts.find(each => each.id === id)) {
-                const newDiscoverPosts = discoverPosts.map(each => {
-                    return {
-                        ...each,
-                        comments: [{
-                            time: faker.date.recent().toDateString(),
-                            auther_id: 'you',
-                            auther_name: 'react-nativer ( yourself )',
-                            id: faker.random.alpha(20) + postComment,
-                            content: postComment,
-                            location: 'vancouver',
-                            like_count: 0,
-                            is_liked: false,
-                            auther_image_url: faker.image.people(500, 500, false),
-                            replys: []
-                        }, ...each.comments]
-                    }
-                })
-                dispatch(setPosts({
-                    type: 'DiscoverPosts',
-                    payload: newDiscoverPosts
-                }))
-            }
-            if (nearbyPosts.find(each => each.id === id)) {
-                const newNearbyPosts = nearbyPosts.map(each => {
-                    return {
-                        ...each,
-                        comments: [{
-                            time: faker.date.recent().toDateString(),
-                            auther_id: 'you',
-                            auther_name: 'react-nativer ( yourself )',
-                            id: faker.random.alpha(20) + postComment,
-                            content: postComment,
-                            location: 'vancouver',
-                            like_count: 0,
-                            is_liked: false,
-                            auther_image_url: faker.image.people(500, 500, false),
-                            replys: []
-                        }, ...each.comments]
-                    }
-                })
-                dispatch(setPosts({
-                    type: 'NearbyPosts',
-                    payload: newNearbyPosts
-                }))
-            }
+    const addPostCommentContent = () => {
+        if (postComment) {
+            dispatch(addPostComment({
+                post_id: selectedPost?.id!,
+                comment_content: postComment
+            }))
         }
         setcommentID('')
         setpostComment('')
@@ -210,7 +168,7 @@ export const PostDetail = () => {
                 value={postComment}
                 onChangeText={v => setpostComment(v)}
                 style={{ backgroundColor: 'lavenderblush', borderRadius: 15, height: '100%', flex: 1, paddingHorizontal: 15 }} />
-            <Pressable onPress={() => addPostComment()} style={{ flex: 0.2, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}><Feather color={'grey'} name="send" size={25}></Feather></Pressable>
+            <Pressable onPress={() => addPostCommentContent()} style={{ flex: 0.2, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}><Feather color={'grey'} name="send" size={25}></Feather></Pressable>
         </View>
     </View>
 }
