@@ -14,6 +14,9 @@ import Feather from 'react-native-vector-icons/Feather'
 import useIsFirstRender from "../../utility/hooks/useIsFirstRendering";
 import { faker } from "@faker-js/faker";
 import { selectKeyboard, selectSafeAreaViewDimension } from "../../redux/slices/utilitySlice";
+import produce from "immer"
+import { PostCommentType, PostType } from "../../types/posts";
+import { WritableDraft } from "immer/dist/internal";
 
 export const PostDetail = () => {
     const id = useRoute<RouteProp<AppRoutesType, "PostDetail">>().params.post_id
@@ -121,20 +124,18 @@ export const PostDetail = () => {
         textInputRef.current?.blur()
     }
 
-    const flipLike = (commentID: string, replyID?: string) => {
+    const flipLike = (isLike: boolean, commentID: string, replyID?: string) => {
         if (commentID && !replyID) {
             if (discoverPosts.find(each => each.id === id)) {
-                const newDiscoverPosts = discoverPosts.map(each => {
-                    return each.id === id ? {
-                        ...each,
-                        comments: each.comments.map(eachComm => {
-                            return eachComm.id === commentID ? {
-                                ...eachComm,
-                                is_liked: !eachComm.is_liked,
-                                like_count: eachComm.is_liked ? eachComm.like_count - 1 : eachComm.like_count + 1
-                            } : eachComm
-                        })
-                    } : each
+                const newDiscoverPosts = produce(discoverPosts, draft => {
+                    const post = draft.find(each => each.id === id);
+                    const comment = post?.comments.find(eachComment => eachComment.id === commentID) as WritableDraft<PostCommentType>
+                    comment.is_liked = !comment.is_liked
+                    if (isLike) {
+                        comment.like_count++
+                    } else {
+                        comment.like_count--
+                    }
                 })
                 dispatch(setPosts({
                     type: 'DiscoverPosts',
@@ -142,17 +143,15 @@ export const PostDetail = () => {
                 }))
             }
             if (nearbyPosts.find(each => each.id === id)) {
-                const newNearbyPosts = nearbyPosts.map(each => {
-                    return each.id === id ? {
-                        ...each,
-                        comments: each.comments.map(eachComm => {
-                            return eachComm.id === commentID ? {
-                                ...eachComm,
-                                is_liked: !eachComm.is_liked,
-                                like_count: eachComm.is_liked ? eachComm.like_count - 1 : eachComm.like_count + 1
-                            } : eachComm
-                        })
-                    } : each
+                const newNearbyPosts = produce(nearbyPosts, draft => {
+                    const post = draft.find(each => each.id === id);
+                    const comment = post?.comments.find(eachComment => eachComment.id === commentID) as WritableDraft<PostCommentType>
+                    comment.is_liked = !comment.is_liked
+                    if (isLike) {
+                        comment.like_count++
+                    } else {
+                        comment.like_count--
+                    }
                 })
                 dispatch(setPosts({
                     type: 'NearbyPosts',
@@ -178,7 +177,7 @@ export const PostDetail = () => {
             </View>
             <View style={{ width: '20%', flexDirection: 'row', alignItems: 'center' }}><StarToSave size={25} onPress={(saved) => savePost(saved)} isSaved={selectedPost?.collected ? true : false} /></View>
         </View>
-        <Animated.View style={{height: currentScrollHeight}}>
+        <Animated.View style={{ height: currentScrollHeight }}>
             <ScrollView
                 onScroll={(e) => {
                     if (e.nativeEvent.contentOffset.y + e.nativeEvent.layoutMeasurement.height > e.nativeEvent.contentSize.height * 0.9) {
@@ -218,7 +217,7 @@ export const PostDetail = () => {
                                     <Text style={{ fontSize: 12, color: 'grey' }}>{eachComm.time} <Entypo name="location-pin" size={14} color="grey" />{eachComm?.location}</Text>
                                 </Pressable>
                                 <View style={{ width: '10%', flexDirection: 'column', alignItems: 'center', paddingTop: 10 }}>
-                                    <Pressable onPress={e => flipLike(eachComm.id)}><AntIcon name={eachComm.is_liked ? "heart" : "hearto"} color={eachComm.is_liked ? 'red' : 'grey'} size={15}></AntIcon></Pressable>
+                                    <StarToSave onPress={v => flipLike(v, eachComm.id)} type="heart" isSaved={eachComm.is_liked} size={15} />
                                     {eachComm.like_count > 0 ? <Text style={{ fontSize: 10, marginTop: 10, color: eachComm.is_liked ? 'red' : 'grey' }}>{eachComm.like_count}</Text> : null}
                                 </View>
                             </View>

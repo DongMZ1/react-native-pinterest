@@ -78,12 +78,12 @@ export const Discover = () => {
                     navigation.navigate('PostDetail', {post_id: item.id})
                 }}><ScaledImage showLoading source={{ uri: item.images[0] }} borderTopLeftRadius={10} borderTopRightRadius={10} /></Pressable>}
                 <View style={{ flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap' }}>
-                    <Text onPress={() => navigation.navigate('PostDetail', {post_id: item.id})} numberOfLines={2} style={{ fontSize: 14, paddingHorizontal: 12, paddingTop: 2, width: '100%', fontFamily: 'Arial' }}>{item.title}</Text>
+                    <Text onPress={() => navigation.navigate('PostDetail', {post_id: item.id})} numberOfLines={2} style={{ fontSize: 14, paddingHorizontal: 12, paddingTop: 2, width: '100%', paddingBottom: 5, fontFamily: 'Arial' }}>{item.title}</Text>
                     <View style={{ width: '25%', flexDirection: 'row', alignItems:'center', justifyContent: 'center' }}>
                         <ScaledImage source={{ uri: item.auther_image_url }} containerStyle={{width: 25}} style={{borderRadius: 15 }}></ScaledImage>
                     </View>
                     <Text style={{ width: '55%', fontSize: 12, color: 'grey' }} numberOfLines={2}>{item.auther_name}</Text>
-                    <StarToSave style={{width: '20%'}} onPress={(saved) => savePost(saved, item.id)} isSaved={item.collected} />
+                    <StarToSave style={{width: '20%', paddingLeft: 5}} onPress={(saved) => savePost(saved, item.id)} isSaved={item.collected} />
                 </View>
             </View>
             })}

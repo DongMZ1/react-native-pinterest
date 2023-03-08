@@ -6,9 +6,10 @@ type StartToSaveProps = {
     isSaved: boolean,
     onPress?: (v : boolean) => void,
     style?: StyleProp<ViewStyle>,
-    size?: number
+    size?: number,
+    type?: "star" | "heart"
 }
-export const StarToSave = ({style, onPress, isSaved, size} : StartToSaveProps) => {
+export const StarToSave = ({style, onPress, isSaved, size, type = "star"} : StartToSaveProps) => {
     const isFirstRendering = useIsFirstRender()
     const scale = useRef(new Animated.Value(1)).current
     const onButtonPress = () => {
@@ -25,5 +26,8 @@ export const StarToSave = ({style, onPress, isSaved, size} : StartToSaveProps) =
               ]).start()
         }
     }, [isSaved])
-    return <TouchableOpacity style={style} onPress={() => onButtonPress()}><Animated.View style={[{ transform: [{scale}]}]}><AntDesign style={{ paddingLeft: 5 }} name={isSaved ? "star" : "staro"} size={ size ? size : 20} color={isSaved ? "red" : "grey"} /></Animated.View></TouchableOpacity>
+    if(type === 'star'){
+    return <TouchableOpacity style={style} onPress={() => onButtonPress()}><Animated.View style={[{ transform: [{scale}]}]}><AntDesign name={isSaved ? "star" : "staro"} size={ size ? size : 20} color={isSaved ? "red" : "grey"} /></Animated.View></TouchableOpacity>
+    }
+    return <TouchableOpacity style={style} onPress={() => onButtonPress()}><Animated.View style={[{ transform: [{scale}]}]}><AntDesign name={isSaved ? "heart" : "hearto"} size={ size ? size : 20} color={isSaved ? "red" : "grey"} /></Animated.View></TouchableOpacity>
 }
