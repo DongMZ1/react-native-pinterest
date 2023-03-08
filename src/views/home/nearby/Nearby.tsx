@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { getAllPosts } from '../../../service/postService/postService';
 import { debounce } from '../../../utility/helpers/debounce-throttle';
 import { useAppDispatch, useAppSelector } from '../../../redux/store';
-import { addPosts, selectPostsNearby, setPosts } from '../../../redux/slices/postsSlice';
+import { addPosts, savePost, selectPostsNearby, setPosts } from '../../../redux/slices/postsSlice';
 import { ScaledImage } from '../../../shared/UIComponent/ScaledImage/ScaledImage';
 import  AntDesign from 'react-native-vector-icons/AntDesign' 
 import { StarToSave } from '../../../shared/UIComponent/StarToSave/StarToSave';
@@ -41,20 +41,6 @@ export const Nearby = () => {
         setloadingRefresh(false)
     }
 
-    const savePost = (saved: boolean, post_id: string) => {
-        const newNearbyPosts = nearbyPosts.map(each => {
-            return {
-                ...each,
-                collected: each.id === post_id ? saved : each.collected
-            }
-        })
-        dispatch(setPosts({
-            type: 'NearbyPosts',
-            payload: newNearbyPosts
-        }))
-    }
-
-
     return nearbyPosts.length > 0 ? <ScrollView
         onScroll={(e) => {
             if (e.nativeEvent.contentOffset.y + e.nativeEvent.layoutMeasurement.height > e.nativeEvent.contentSize.height * 0.8) {
@@ -84,7 +70,10 @@ export const Nearby = () => {
                         <ScaledImage source={{ uri: item.auther_image_url }} containerStyle={{width: 25}} style={{borderRadius: 15 }}></ScaledImage>
                     </View>
                     <Text style={{ width: '55%', fontSize: 12, color: 'grey' }} numberOfLines={2}>{item.distance_from_user} km</Text>
-                    <StarToSave style={{width: '20%', paddingLeft: 5}} onPress={(saved) => savePost(saved, item.id)} isSaved={item.collected} />
+                    <StarToSave style={{width: '20%', paddingLeft: 5}} onPress={(saved) => dispatch(savePost({
+                        saved,
+                        post_id: item.id
+                    }))} isSaved={item.collected} />
                 </View>
             </View>
             })}

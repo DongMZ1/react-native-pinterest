@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { getAllPosts } from '../../../service/postService/postService';
 import { debounce } from '../../../utility/helpers/debounce-throttle';
 import { useAppDispatch, useAppSelector } from '../../../redux/store';
-import { addPosts, selectPostsDiscover, setPosts } from '../../../redux/slices/postsSlice';
+import { addPosts, savePost, selectPostsDiscover, setPosts } from '../../../redux/slices/postsSlice';
 import { ScaledImage } from '../../../shared/UIComponent/ScaledImage/ScaledImage';
 import { StarToSave } from '../../../shared/UIComponent/StarToSave/StarToSave';
 
@@ -42,19 +42,6 @@ export const Discover = () => {
         setloadingRefresh(false)
     }
 
-    const savePost = (saved: boolean, post_id: string) => {
-        const newDiscoverPosts = discoverPosts.map(each => {
-            return {
-                ...each,
-                collected: each.id === post_id ? saved : each.collected
-            }
-        })
-        dispatch(setPosts({
-            type: 'DiscoverPosts',
-            payload: newDiscoverPosts
-        }))
-    }
-
 
     return discoverPosts.length > 0 ? <ScrollView
         onScroll={(e) => {
@@ -83,7 +70,10 @@ export const Discover = () => {
                         <ScaledImage source={{ uri: item.auther_image_url }} containerStyle={{width: 25}} style={{borderRadius: 15 }}></ScaledImage>
                     </View>
                     <Text style={{ width: '55%', fontSize: 12, color: 'grey' }} numberOfLines={2}>{item.auther_name}</Text>
-                    <StarToSave style={{width: '20%', paddingLeft: 5}} onPress={(saved) => savePost(saved, item.id)} isSaved={item.collected} />
+                    <StarToSave style={{width: '20%', paddingLeft: 5}} onPress={(saved) => dispatch(savePost({
+                        saved,
+                        post_id: item.id
+                    }))} isSaved={item.collected} />
                 </View>
             </View>
             })}

@@ -2,7 +2,7 @@ import { RouteProp, useNavigation, useRoute } from "@react-navigation/native"
 import { AppRoutesType } from "../../routes"
 import { Pressable, ScrollView, View, Text, TextInput, KeyboardAvoidingView, Animated } from "react-native"
 import { useAppDispatch, useAppSelector } from "../../redux/store";
-import { selectPostsDiscover, selectPostsNearby, setPosts } from "../../redux/slices/postsSlice";
+import { savePost, selectPostsDiscover, selectPostsNearby, setPosts } from "../../redux/slices/postsSlice";
 import { Carousel } from "../../shared/UIComponent/Carousel/Carousel";
 import { ScaledImage } from "../../shared/UIComponent/ScaledImage/ScaledImage";
 import { StarToSave } from "../../shared/UIComponent/StarToSave/StarToSave";
@@ -40,35 +40,6 @@ export const PostDetail = () => {
     useEffect(() => {
         Animated.timing(currentScrollHeight, { toValue: scrollHeight, useNativeDriver: false, duration: 150 }).start()
     }, [scrollHeight])
-
-    const savePost = (saved: boolean) => {
-        if (discoverPosts.find(each => each.id === id)) {
-            const newDiscoverPosts = discoverPosts.map(each => {
-                return {
-                    ...each,
-                    collected: each.id === id ? saved : each.collected
-                }
-            })
-            dispatch(setPosts({
-                type: 'DiscoverPosts',
-                payload: newDiscoverPosts
-            }))
-            return
-        }
-        if (nearbyPosts.find(each => each.id === id)) {
-            const newNearbyPosts = nearbyPosts.map(each => {
-                return {
-                    ...each,
-                    collected: each.id === id ? saved : each.collected
-                }
-            })
-            dispatch(setPosts({
-                type: 'NearbyPosts',
-                payload: newNearbyPosts
-            }))
-            return
-        }
-    }
 
     const addPostComment = () => {
         if (!commentID && postComment) {
@@ -124,8 +95,8 @@ export const PostDetail = () => {
         textInputRef.current?.blur()
     }
 
-    const flipLike = (isLike: boolean, commentID: string, replyID?: string) => {
-        if (commentID && !replyID) {
+    const flipCommentLike = (isLike: boolean, commentID: string, replyID?: string) => {
+        if (commentID) {
             if (discoverPosts.find(each => each.id === id)) {
                 const newDiscoverPosts = produce(discoverPosts, draft => {
                     const post = draft.find(each => each.id === id);
@@ -175,7 +146,10 @@ export const PostDetail = () => {
                 <Text style={{ fontSize: 14 }}>{selectedPost?.auther_name}</Text>
                 <Text style={{ fontSize: 12, color: 'grey' }}><Entypo name="location-pin" size={14} color="grey" />{selectedPost?.location}</Text>
             </View>
-            <View style={{ width: '20%', flexDirection: 'row', alignItems: 'center' }}><StarToSave size={25} onPress={(saved) => savePost(saved)} isSaved={selectedPost?.collected ? true : false} /></View>
+            <View style={{ width: '20%', flexDirection: 'row', alignItems: 'center' }}><StarToSave size={25} onPress={(saved) => dispatch(savePost({
+                saved,
+                post_id: selectedPost?.id!
+            }))} isSaved={selectedPost?.collected ? true : false} /></View>
         </View>
         <Animated.View style={{ height: currentScrollHeight }}>
             <ScrollView
@@ -217,7 +191,7 @@ export const PostDetail = () => {
                                     <Text style={{ fontSize: 12, color: 'grey' }}>{eachComm.time} <Entypo name="location-pin" size={14} color="grey" />{eachComm?.location}</Text>
                                 </Pressable>
                                 <View style={{ width: '10%', flexDirection: 'column', alignItems: 'center', paddingTop: 10 }}>
-                                    <StarToSave onPress={v => flipLike(v, eachComm.id)} type="heart" isSaved={eachComm.is_liked} size={15} />
+                                    <StarToSave onPress={v => flipCommentLike(v, eachComm.id)} type="heart" isSaved={eachComm.is_liked} size={15} />
                                     {eachComm.like_count > 0 ? <Text style={{ fontSize: 10, marginTop: 10, color: eachComm.is_liked ? 'red' : 'grey' }}>{eachComm.like_count}</Text> : null}
                                 </View>
                             </View>

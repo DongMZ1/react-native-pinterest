@@ -31,10 +31,31 @@ export const postsSlice = createSlice({
                 state.nearbyPosts = action.payload.payload
             }
         },
+        savePost: (state, action: PayloadAction<{saved: boolean, post_id: string}>) => {
+            const {saved, post_id} = action.payload
+            if (state.discoverPosts.find(each => each.id === post_id)) {
+                state.discoverPosts = state.discoverPosts.map(each => {
+                    return {
+                        ...each,
+                        collected: each.id === post_id ? saved : each.collected
+                    }
+                })
+                return
+            }
+            if (state.nearbyPosts.find(each => each.id === post_id)) {
+                state.nearbyPosts = state.nearbyPosts.map(each => {
+                    return {
+                        ...each,
+                        collected: each.id === post_id ? saved : each.collected
+                    }
+                })
+                return
+            }
+        }
     },
 })
 
-export const { addPosts, setPosts } = postsSlice.actions
+export const { addPosts, setPosts, savePost } = postsSlice.actions
 export const selectPostsDiscover = (state :RootState) => state.postsSlice.discoverPosts
 export const selectPostsNearby = (state: RootState) => state.postsSlice.nearbyPosts
 export default postsSlice.reducer
