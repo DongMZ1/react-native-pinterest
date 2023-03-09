@@ -22,10 +22,11 @@ export const getAllPostsApi = async ({ pageNum, type, filter }: { pageNum: numbe
             collected: false,
             distance_from_user: Math.trunc(Math.random() * 100),
             comments: new Array(Math.floor(Math.random() * 100)).fill("").map(e => {
+                const commentAutherName = faker.name.fullName()
                 return {
                     time: faker.date.recent(10).toDateString(),
                     auther_id: faker.random.alpha(20),
-                    auther_name: faker.name.fullName(),
+                    auther_name: commentAutherName,
                     id: faker.random.alpha(20),
                     content: faker.lorem.sentences(1),
                     location: faker.address.cityName(),
@@ -43,6 +44,7 @@ export const getAllPostsApi = async ({ pageNum, type, filter }: { pageNum: numbe
                             like_count: Math.floor(Math.random() * 1000),
                             is_liked: false,
                             auther_image_url: faker.image.people(500, 500, true),
+                            reply_to_auther_name: commentAutherName
                         }
                     })
                 }

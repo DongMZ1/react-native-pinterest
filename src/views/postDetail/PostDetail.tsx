@@ -36,7 +36,7 @@ export const PostDetail = () => {
     const [commentID, setcommentID] = useState('')
     const [replyID, setreplyID] = useState('')
 
-    const [postComment, setpostComment] = useState('')
+    const [content, setcontent] = useState('')
     const textInputRef = useRef<TextInput>(null)
 
     useEffect(() => {
@@ -44,14 +44,14 @@ export const PostDetail = () => {
     }, [scrollHeight])
 
     const addPostCommentContent = () => {
-        if (postComment) {
+        if (content) {
             dispatch(addPostComment({
                 post_id: selectedPost?.id!,
-                comment_content: postComment
+                comment_content: content
             }))
         }
         setcommentID('')
-        setpostComment('')
+        setcontent('')
         textInputRef.current?.blur()
     }
 
@@ -139,7 +139,8 @@ export const PostDetail = () => {
                                         textInputRef.current?.focus()
                                     }} style={{ width: '90%' }}>
                                         <Text style={{ fontSize: 12, color: 'grey' }}>{reply?.auther_name}</Text>
-                                        <Text style={{ fontSize: 14, paddingVertical: 5 }}>{reply?.content}</Text>
+                                        <Text style={{ fontSize: 14, paddingVertical: 5 }}>
+                                            {reply.reply_to_auther_name !== eachComm.auther_name ? <>Reply to <Text style={{color: 'grey', fontSize: 12}}>{reply.reply_to_auther_name}</Text> : </> : null}{reply?.content}</Text>
                                         <Text style={{ fontSize: 12, color: 'grey' }}>{reply.time} <Entypo name="location-pin" size={14} color="grey" />{reply?.location}</Text>
                                     </Pressable>
                                     <View style={{ width: '10%', flexDirection: 'column', alignItems: 'center', paddingTop: 10 }}>
@@ -164,8 +165,8 @@ export const PostDetail = () => {
                     setreplyID('')
                 }}
                 ref={textInputRef} placeholder={commentID ? replyID ? `Reply @${selectedPost?.comments.find(each => each.id === commentID)?.replys.find(eachReply => eachReply.id === replyID)?.auther_name}` : `Reply @${selectedPost?.comments.find(each => each.id === commentID)?.auther_name}` : "Share Your Opinion"}
-                value={postComment}
-                onChangeText={v => setpostComment(v)}
+                value={content}
+                onChangeText={v => setcontent(v)}
                 style={{ backgroundColor: 'lavenderblush', borderRadius: 15, height: '100%', flex: 1, paddingHorizontal: 15 }} />
             <Pressable onPress={() => addPostCommentContent()} style={{ flex: 0.2, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}><Feather color={'grey'} name="send" size={25}></Feather></Pressable>
         </View>

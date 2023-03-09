@@ -8,7 +8,7 @@ export type PostCommentReplyType = {
     auther_image_url: string,
     like_count: number,
     is_liked: boolean,
-    reply_to_auther_id?: string
+    reply_to_auther_name?: string
 }
 export type PostCommentType = {
     time: string,
