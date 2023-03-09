@@ -2,7 +2,7 @@ import { RouteProp, useNavigation, useRoute } from "@react-navigation/native"
 import { AppRoutesType } from "../../routes"
 import { Pressable, ScrollView, View, Text, TextInput, KeyboardAvoidingView, Animated } from "react-native"
 import { useAppDispatch, useAppSelector } from "../../redux/store";
-import { addPostComment, savePost, selectPostsDiscover, selectPostsNearby, setCommentIsLiked, setPosts } from "../../redux/slices/postsSlice";
+import { addPostComment, savePost, selectPostsDiscover, selectPostsNearby, setCommentIsLiked, setCommentReplyIsLiked, setPosts } from "../../redux/slices/postsSlice";
 import { Carousel } from "../../shared/UIComponent/Carousel/Carousel";
 import { ScaledImage } from "../../shared/UIComponent/ScaledImage/ScaledImage";
 import { StarToSave } from "../../shared/UIComponent/StarToSave/StarToSave";
@@ -57,13 +57,21 @@ export const PostDetail = () => {
     }
 
     const flipCommentLike = (isLike: boolean, commentID: string) => {
-        if (commentID) {
-            dispatch(setCommentIsLiked({
-                is_liked: isLike,
-                post_id: selectedPost?.id!,
-                comment_id: commentID
-            }))
-        }
+        dispatch(setCommentIsLiked({
+            is_liked: isLike,
+            post_id: selectedPost?.id!,
+            comment_id: commentID
+        }))
+
+    }
+
+    const flipCommentReplyLike = (isLike: boolean, commentID: string, reply_id: string) => {
+        dispatch(setCommentReplyIsLiked({
+            is_liked: isLike,
+            post_id: selectedPost?.id!,
+            comment_id: commentID,
+            reply_id
+        }))
     }
     return <View style={{ flex: 1 }} onLayout={event => {
         const { width, height } = event.nativeEvent.layout;
@@ -129,7 +137,7 @@ export const PostDetail = () => {
                                     {eachComm.like_count > 0 ? <Text style={{ fontSize: 10, marginTop: 10, color: eachComm.is_liked ? 'red' : 'grey' }}>{eachComm.like_count}</Text> : null}
                                 </View>
                             </View>
-                            <LoadMore style={{ width: '100%', paddingLeft: '15%' }} items={eachComm.replys} renderItem={reply => <View style={{ flexDirection: 'row' }}>
+                            <LoadMore style={{ width: '100%', paddingLeft: '15%' }} items={eachComm.replys} renderItem={reply => <View key={reply.id} style={{ flexDirection: 'row' }}>
                                 <View style={{ width: '15%', flexDirection: 'row', alignItems: 'center' }}>
                                     <ScaledImage source={{ uri: reply?.auther_image_url }} containerStyle={{ width: 30 }} style={{ borderRadius: 15 }}></ScaledImage>
                                 </View>
@@ -141,11 +149,11 @@ export const PostDetail = () => {
                                     }} style={{ width: '90%' }}>
                                         <Text style={{ fontSize: 12, color: 'grey' }}>{reply?.auther_name}</Text>
                                         <Text style={{ fontSize: 14, paddingVertical: 5 }}>
-                                            {reply.reply_to_auther_name !== eachComm.auther_name ? <>Reply to <Text style={{color: 'grey', fontSize: 12}}>{reply.reply_to_auther_name}</Text> : </> : null}{reply?.content}</Text>
+                                            {reply.reply_to_auther_name !== eachComm.auther_name ? <>Reply to <Text style={{ color: 'grey', fontSize: 12 }}>{reply.reply_to_auther_name}</Text> : </> : null}{reply?.content}</Text>
                                         <Text style={{ fontSize: 12, color: 'grey' }}>{reply.time} <Entypo name="location-pin" size={14} color="grey" />{reply?.location}</Text>
                                     </Pressable>
                                     <View style={{ width: '10%', flexDirection: 'column', alignItems: 'center', paddingTop: 10 }}>
-                                        <StarToSave onPress={(v) => { }} type="heart" isSaved={reply.is_liked} size={15} />
+                                        <StarToSave onPress={(v) => flipCommentReplyLike(v, eachComm.id, reply.id)} type="heart" isSaved={reply.is_liked} size={15} />
                                         {reply.like_count > 0 ? <Text style={{ fontSize: 10, marginTop: 10, color: reply.is_liked ? 'red' : 'grey' }}>{reply.like_count}</Text> : null}
                                     </View>
                                 </View>

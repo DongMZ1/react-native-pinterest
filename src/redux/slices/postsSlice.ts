@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 import { RootState } from '../store'
-import { PostCommentType, PostType } from '../../types/posts'
+import { PostCommentReplyType, PostCommentType, PostType } from '../../types/posts'
 import { faker } from '@faker-js/faker'
 import produce from "immer"
 import { WritableDraft } from 'immer/dist/internal'
@@ -118,11 +118,41 @@ export const postsSlice = createSlice({
                     }
                 })
             }
+        },
+        setCommentReplyIsLiked : (state, action: PayloadAction<{ post_id: string, comment_id: string, reply_id: string, is_liked: boolean }>) => {
+            const {post_id, comment_id, is_liked, reply_id} = action.payload
+            if (state.discoverPosts.find(each => each.id === post_id)) {
+                state.discoverPosts = produce(state.discoverPosts, draft => {
+                    const post = draft.find(each => each.id === post_id);
+                    const comment = post?.comments.find(eachComment => eachComment.id === comment_id) as WritableDraft<PostCommentType>
+                    const reply = comment.replys.find(each => each.id === reply_id) as WritableDraft<PostCommentReplyType>
+                    reply.is_liked = !reply.is_liked
+                    if (is_liked) {
+                        reply.like_count++
+                    } else {
+                        reply.like_count--
+                    }
+                })
+            }
+            if (state.nearbyPosts.find(each => each.id === post_id)) {
+                state.nearbyPosts = produce(state.nearbyPosts, draft => {
+                    const post = draft.find(each => each.id === post_id);
+                    const comment = post?.comments.find(eachComment => eachComment.id === comment_id) as WritableDraft<PostCommentType>
+                    comment.is_liked = !comment.is_liked
+                    const reply = comment.replys.find(each => each.id === reply_id) as WritableDraft<PostCommentReplyType>
+                    reply.is_liked = !reply.is_liked
+                    if (is_liked) {
+                        reply.like_count++
+                    } else {
+                        reply.like_count--
+                    }
+                })
+            }
         }
     },
 })
 
-export const { addPosts, setPosts, savePost, addPostComment, setCommentIsLiked } = postsSlice.actions
+export const { addPosts, setPosts, savePost, addPostComment, setCommentIsLiked, setCommentReplyIsLiked } = postsSlice.actions
 export const selectPostsDiscover = (state: RootState) => state.postsSlice.discoverPosts
 export const selectPostsNearby = (state: RootState) => state.postsSlice.nearbyPosts
 export default postsSlice.reducer
