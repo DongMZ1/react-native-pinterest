@@ -2,7 +2,7 @@ import { RouteProp, useNavigation, useRoute } from "@react-navigation/native"
 import { AppRoutesType } from "../../routes"
 import { Pressable, ScrollView, View, Text, TextInput, KeyboardAvoidingView, Animated } from "react-native"
 import { useAppDispatch, useAppSelector } from "../../redux/store";
-import { addPostComment, savePost, selectPostsDiscover, selectPostsNearby, setCommentIsLiked, setCommentReplyIsLiked, setPosts } from "../../redux/slices/postsSlice";
+import { addPostComment, replyPostComment, savePost, selectPostsDiscover, selectPostsNearby, setCommentIsLiked, setCommentReplyIsLiked, setPosts } from "../../redux/slices/postsSlice";
 import { Carousel } from "../../shared/UIComponent/Carousel/Carousel";
 import { ScaledImage } from "../../shared/UIComponent/ScaledImage/ScaledImage";
 import { StarToSave } from "../../shared/UIComponent/StarToSave/StarToSave";
@@ -44,16 +44,27 @@ export const PostDetail = () => {
         Animated.timing(currentScrollHeight, { toValue: scrollHeight, useNativeDriver: false, duration: 150 }).start()
     }, [scrollHeight])
 
-    const addPostCommentContent = () => {
-        if (content) {
+    const sendContent = () => {
+        if (content && !commentID) {
             dispatch(addPostComment({
                 post_id: selectedPost?.id!,
                 comment_content: content
             }))
-            dispatch(setModalContent('SENT!'))
+            dispatch(setModalContent('Sent!'))
+        }
+
+        if (content && commentID) {
+            dispatch(replyPostComment({
+                post_id: selectedPost?.id!,
+                comment_id: commentID,
+                reply_id: replyID,
+                content,
+            }))
+            dispatch(setModalContent('Replied!'))
         }
         setcommentID('')
         setcontent('')
+        setreplyID('')
         textInputRef.current?.blur()
     }
 
@@ -178,7 +189,7 @@ export const PostDetail = () => {
                 value={content}
                 onChangeText={v => setcontent(v)}
                 style={{ backgroundColor: 'lavenderblush', borderRadius: 15, height: '100%', flex: 1, paddingHorizontal: 15 }} />
-            <Pressable onPress={() => addPostCommentContent()} style={{ flex: 0.2, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}><Feather color={'grey'} name="send" size={25}></Feather></Pressable>
+            <Pressable onPress={() => sendContent()} style={{ flex: 0.2, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}><Feather color={'grey'} name="send" size={25}></Feather></Pressable>
         </View>
     </View>
 }
