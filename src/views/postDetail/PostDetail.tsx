@@ -93,7 +93,7 @@ export const PostDetail = () => {
                         }
                     }
                 }}
-                scrollEventThrottle={20}
+                scrollEventThrottle={100}
                 scrollEnabled
                 style={{ flex: 1 }}>
                 {

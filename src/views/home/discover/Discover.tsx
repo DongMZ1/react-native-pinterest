@@ -50,7 +50,7 @@ export const Discover = () => {
             }
         }}
         contentContainerStyle={{ flexGrow: 1, flexDirection: 'row' }}
-        scrollEventThrottle={50}
+        scrollEventThrottle={100}
         refreshControl={<RefreshControl refreshing={loadingRefresh} onRefresh={resetPosts} />}
         style={{ backgroundColor: 'azure' }}
     >
