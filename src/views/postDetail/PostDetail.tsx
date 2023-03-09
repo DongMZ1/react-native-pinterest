@@ -99,7 +99,7 @@ export const PostDetail = () => {
                 {
                     selectedPost && <View><Carousel images={selectedPost.images} /></View>
                 }
-                <View style={{ paddingHorizontal: 15 }}>
+                <View onTouchStart={onTouchStart} onTouchEnd={onTouchEnd} style={{ paddingHorizontal: 15 }}>
                     <Text style={{ fontSize: 20, fontWeight: '600', paddingVertical: 15 }}>{selectedPost?.title}</Text>
                     <Text style={{ fontSize: 14, }}>{selectedPost?.content}</Text>
                     <Text style={{ fontSize: 12, paddingVertical: 15, color: 'grey' }}>Edit : {selectedPost?.time}</Text>
