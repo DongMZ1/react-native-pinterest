@@ -68,13 +68,14 @@ function App() {
                     }
                 </AppRoutes.Navigator>
             </NavigationContainer>
-            <Modal animationType="slide"
-                transparent={true}
+            <Modal 
+                animationType='fade'
                 style={{width: '100%', height: '100%'}}    
+                transparent={true}
                 visible={modalContent !== ''}
             >
-                <Pressable style={{height: '100%', width: '100%', backgroundColor: 'rgba(0, 0, 0, 0.2)', flexDirection:'row', justifyContent:'center', alignItems:'center'}}>
-                    <View style={{width: '70%', minHeight: 100, flexDirection:'row', justifyContent:'center', backgroundColor:'white', borderRadius: 50, alignItems:'center'}}><Text style={{fontSize: 14}}>{modalContent}</Text></View>
+                <Pressable style={{height: '100%', width: '100%', flexDirection:'row', justifyContent:'center', alignItems:'center', backgroundColor: 'rgba(0, 0, 0, 0.2)'}}>
+                    <View style={{minWidth: '50%', minHeight: 50, flexDirection:'row', justifyContent:'center', backgroundColor:'white', borderRadius: 20, alignItems:'center'}}><Text style={{fontSize: 14}}>{modalContent}</Text></View>
                 </Pressable>
             </Modal>
         </SafeAreaView>
