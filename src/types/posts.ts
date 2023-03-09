@@ -1,3 +1,15 @@
+export type PostCommentReplyType = {
+    time: string,
+    auther_id: string,
+    auther_name: string
+    id: string
+    content: string,
+    location: string,
+    auther_image_url: string,
+    like_count: number,
+    is_liked: boolean,
+    reply_to_auther_id?: string
+}
 export type PostCommentType = {
     time: string,
     auther_id: string,
@@ -8,18 +20,7 @@ export type PostCommentType = {
     auther_image_url: string,
     like_count: number,
     is_liked: boolean,
-    replys: {
-        time: string,
-        auther_id: string,
-        auther_name: string
-        id: string
-        content: string,
-        location: string,
-        auther_image_url: string,
-        like_count: number,
-        is_liked: boolean,
-        reply_to_auther_id: string
-    }[]
+    replys: PostCommentReplyType[]
 }
 
 export type PostType = {
