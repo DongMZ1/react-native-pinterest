@@ -50,11 +50,11 @@ export const PostDetail = () => {
                 post_id: selectedPost?.id!,
                 comment_content: content
             }))
+            dispatch(setModalContent('SENT!'))
         }
         setcommentID('')
         setcontent('')
         textInputRef.current?.blur()
-        dispatch(setModalContent('SENT!'))
     }
 
     const flipCommentLike = (isLike: boolean, commentID: string) => {
