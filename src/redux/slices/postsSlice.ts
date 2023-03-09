@@ -92,8 +92,8 @@ export const postsSlice = createSlice({
                 })
             }
         },
-        setCommentIsLiked : (state, action: PayloadAction<{ post_id: string, comment_id: string, is_liked: boolean }>) => {
-            const {post_id, comment_id, is_liked} = action.payload
+        setCommentIsLiked: (state, action: PayloadAction<{ post_id: string, comment_id: string, is_liked: boolean }>) => {
+            const { post_id, comment_id, is_liked } = action.payload
             if (state.discoverPosts.find(each => each.id === post_id)) {
                 state.discoverPosts = produce(state.discoverPosts, draft => {
                     const post = draft.find(each => each.id === post_id);
@@ -119,8 +119,8 @@ export const postsSlice = createSlice({
                 })
             }
         },
-        setCommentReplyIsLiked : (state, action: PayloadAction<{ post_id: string, comment_id: string, reply_id: string, is_liked: boolean }>) => {
-            const {post_id, comment_id, is_liked, reply_id} = action.payload
+        setCommentReplyIsLiked: (state, action: PayloadAction<{ post_id: string, comment_id: string, reply_id: string, is_liked: boolean }>) => {
+            const { post_id, comment_id, is_liked, reply_id } = action.payload
             if (state.discoverPosts.find(each => each.id === post_id)) {
                 state.discoverPosts = produce(state.discoverPosts, draft => {
                     const post = draft.find(each => each.id === post_id);
@@ -148,11 +148,55 @@ export const postsSlice = createSlice({
                     }
                 })
             }
+        },
+        replyPostComment: (state, action: PayloadAction<{
+            post_id: string,
+            comment_id: string,
+            reply_id: string,
+            content: string
+        }>) => {
+            const { post_id, comment_id, reply_id, content } = action.payload;
+            if (state.discoverPosts.find(each => each.id === post_id)) {
+                state.discoverPosts = produce(state.discoverPosts, draft => {
+                    const post = draft.find(each => each.id === post_id) as WritableDraft<PostType>
+                    const comment = post.comments.find(each => each.id === comment_id) as WritableDraft<PostCommentType>
+                    comment.replys.push({
+                        time: faker.date.recent().toDateString(),
+                        auther_id: 'you',
+                        auther_name: 'react-nativer ( yourself )',
+                        id: faker.random.alpha(20) + content,
+                        content: content,
+                        location: 'vancouver',
+                        like_count: 0,
+                        is_liked: false,
+                        auther_image_url: faker.image.people(500, 500, false),
+                        reply_to_auther_name: reply_id ? comment.replys.find(eachReply => eachReply.id === reply_id)?.auther_name : undefined
+                    })
+                })
+            }
+            if (state.nearbyPosts.find(each => each.id === post_id)) {
+                state.nearbyPosts = produce(state.nearbyPosts, draft => {
+                    const post = draft.find(each => each.id === post_id) as WritableDraft<PostType>
+                    const comment = post.comments.find(each => each.id === comment_id) as WritableDraft<PostCommentType>
+                    comment.replys.push({
+                        time: faker.date.recent().toDateString(),
+                        auther_id: 'you',
+                        auther_name: 'react-nativer ( yourself )',
+                        id: faker.random.alpha(20) + content,
+                        content: content,
+                        location: 'vancouver',
+                        like_count: 0,
+                        is_liked: false,
+                        auther_image_url: faker.image.people(500, 500, false),
+                        reply_to_auther_name: reply_id ? comment.replys.find(eachReply => eachReply.id === reply_id)?.auther_name : undefined
+                    })
+                })
+            }
         }
     },
 })
 
-export const { addPosts, setPosts, savePost, addPostComment, setCommentIsLiked, setCommentReplyIsLiked } = postsSlice.actions
+export const { addPosts, setPosts, savePost, addPostComment, setCommentIsLiked, setCommentReplyIsLiked, replyPostComment } = postsSlice.actions
 export const selectPostsDiscover = (state: RootState) => state.postsSlice.discoverPosts
 export const selectPostsNearby = (state: RootState) => state.postsSlice.nearbyPosts
 export default postsSlice.reducer
