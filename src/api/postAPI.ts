@@ -9,11 +9,12 @@ export const getAllPostsApi = async ({ pageNum, type, filter }: { pageNum: numbe
     }
     await new Promise(r => setTimeout(r, 300))
     const posts: PostType[] = new Array(10).fill("").map(each => {
+        const imageHeight = Math.floor(Math.random() * 360) + 360
         return {
             title: faker.commerce.productName(),
             time: faker.date.recent(20).toDateString(),
             content: faker.lorem.sentences(30),
-            images: new Array(10).fill("").map(each => type === 'fasion' ? faker.image.fashion(480, 640, true) : faker.image.nightlife(480, 640, true)),
+            images: new Array(10).fill("").map(each => type === 'fasion' ? faker.image.fashion(480, imageHeight, true) : faker.image.nightlife(480, imageHeight, true)),
             id: faker.random.alpha(20),
             auther_name: faker.name.fullName(),
             auther_id: faker.random.alpha(20),
