@@ -34,6 +34,7 @@ export const PostDetail = () => {
     const { onTouchStart, onTouchEnd } = useSwipe(undefined, () => navigation.goBack(), 5)
     const [commentsDisplayIndex, setcommentsDisplayIndex] = useState(10)
     const [commentID, setcommentID] = useState('')
+    const [replyID, setreplyID] = useState('')
 
     const [postComment, setpostComment] = useState('')
     const textInputRef = useRef<TextInput>(null)
@@ -134,6 +135,7 @@ export const PostDetail = () => {
                                 <View style={{ width: '85%', paddingVertical: 15, flexDirection: 'row' }} >
                                     <Pressable onPress={() => {
                                         setcommentID(eachComm.id);
+                                        setreplyID(reply.id)
                                         textInputRef.current?.focus()
                                     }} style={{ width: '90%' }}>
                                         <Text style={{ fontSize: 12, color: 'grey' }}>{reply?.auther_name}</Text>
@@ -157,8 +159,11 @@ export const PostDetail = () => {
         </Animated.View>
         <View style={{ height: footerHeight, paddingHorizontal: 10, paddingVertical: 5, flexDirection: 'row' }}>
             <TextInput
-                onBlur={() => setcommentID('')}
-                ref={textInputRef} placeholder={commentID ? `Reply @${selectedPost?.comments.find(each => each.id === commentID)?.auther_name}` : "Share Your Opinion"}
+                onBlur={() => {
+                    setcommentID('')
+                    setreplyID('')
+                }}
+                ref={textInputRef} placeholder={commentID ? replyID ? `Reply @${selectedPost?.comments.find(each => each.id === commentID)?.replys.find(eachReply => eachReply.id === replyID)?.auther_name}` : `Reply @${selectedPost?.comments.find(each => each.id === commentID)?.auther_name}` : "Share Your Opinion"}
                 value={postComment}
                 onChangeText={v => setpostComment(v)}
                 style={{ backgroundColor: 'lavenderblush', borderRadius: 15, height: '100%', flex: 1, paddingHorizontal: 15 }} />
