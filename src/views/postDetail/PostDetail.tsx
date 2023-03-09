@@ -28,7 +28,8 @@ export const PostDetail = () => {
     const headerHeight = 60
     const footerHeight = 50
     const keyboardHeight = useAppSelector(selectKeyboard).keyboardheight
-    const scrollHeight = 763 - keyboardHeight - headerHeight - footerHeight
+    const [viewHeight, setviewHeight] = useState(0)
+    const scrollHeight = viewHeight - keyboardHeight - headerHeight - footerHeight
     const currentScrollHeight = useRef(new Animated.Value(scrollHeight)).current
     const selectedPost = [...discoverPosts, ...nearbyPosts].find(each => each.id === id)
     const { onTouchStart, onTouchEnd } = useSwipe(undefined, () => navigation.goBack(), 5)
@@ -66,7 +67,7 @@ export const PostDetail = () => {
     }
     return <View style={{ flex: 1 }} onLayout={event => {
         const { width, height } = event.nativeEvent.layout;
-        console.log(width, height)
+        setviewHeight(height)
     }}>
         <View style={{ width: '100%', height: headerHeight, flexDirection: 'row' }}>
             <Pressable onPress={() => navigation.goBack()} style={{ width: '15%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
