@@ -13,7 +13,7 @@ import Entypo from 'react-native-vector-icons/Entypo'
 import Feather from 'react-native-vector-icons/Feather'
 import useIsFirstRender from "../../utility/hooks/useIsFirstRendering";
 import { faker } from "@faker-js/faker";
-import { selectKeyboard, selectSafeAreaViewDimension } from "../../redux/slices/utilitySlice";
+import { selectKeyboard, selectSafeAreaViewDimension, setModalContent } from "../../redux/slices/utilitySlice";
 import produce from "immer"
 import { PostCommentType, PostType } from "../../types/posts";
 import { WritableDraft } from "immer/dist/internal";
@@ -54,6 +54,7 @@ export const PostDetail = () => {
         setcommentID('')
         setcontent('')
         textInputRef.current?.blur()
+        dispatch(setModalContent('SENT!'))
     }
 
     const flipCommentLike = (isLike: boolean, commentID: string) => {
