@@ -170,7 +170,7 @@ export const postsSlice = createSlice({
                         like_count: 0,
                         is_liked: false,
                         auther_image_url: faker.image.people(500, 500, false),
-                        reply_to_auther_name: reply_id ? comment.replys.find(eachReply => eachReply.id === reply_id)?.auther_name : undefined
+                        reply_to_auther_name: reply_id ? comment.replys.find(eachReply => eachReply.id === reply_id)?.auther_name : comment.auther_name
                     })
                 })
             }
@@ -188,7 +188,7 @@ export const postsSlice = createSlice({
                         like_count: 0,
                         is_liked: false,
                         auther_image_url: faker.image.people(500, 500, false),
-                        reply_to_auther_name: reply_id ? comment.replys.find(eachReply => eachReply.id === reply_id)?.auther_name : undefined
+                        reply_to_auther_name: reply_id ? comment.replys.find(eachReply => eachReply.id === reply_id)?.auther_name : comment.auther_name
                     })
                 })
             }
