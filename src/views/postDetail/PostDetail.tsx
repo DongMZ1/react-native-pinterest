@@ -17,6 +17,7 @@ import { selectKeyboard, selectSafeAreaViewDimension } from "../../redux/slices/
 import produce from "immer"
 import { PostCommentType, PostType } from "../../types/posts";
 import { WritableDraft } from "immer/dist/internal";
+import { LoadMore } from "./component/LoadMore/LoadMore";
 
 export const PostDetail = () => {
     const id = useRoute<RouteProp<AppRoutesType, "PostDetail">>().params.post_id
@@ -107,26 +108,27 @@ export const PostDetail = () => {
                     }} style={{ height: 40, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 15, backgroundColor: 'lavenderblush', borderRadius: 15, width: '100%', marginTop: 5 }}><Text style={{ color: 'lightgrey' }}>Share Your Opinion</Text></Pressable>
                 </View>
                 {
-                    selectedPost?.comments.slice(0, commentsDisplayIndex).map(eachComm => <View key={eachComm.id} style={{ flexDirection: 'row', paddingHorizontal: 15 }}>
-                        <View key={eachComm.id} style={{ width: '100%', flexDirection: 'row' }}>
-                            <View style={{ width: '10%', flexDirection: 'row', alignItems: 'center' }}>
-                                <ScaledImage source={{ uri: eachComm?.auther_image_url }} containerStyle={{ width: 30 }} style={{ borderRadius: 15 }}></ScaledImage>
-                            </View>
-                            <View style={{ width: '90%', flexDirection: 'row', paddingLeft: 10, paddingVertical: 15, borderBottomWidth: 1, borderBottomColor: 'lightcyan' }} >
-                                <Pressable onPress={() => {
-                                    setcommentID(eachComm.id);
-                                    textInputRef.current?.focus()
-                                }} style={{ width: '90%' }}>
-                                    <Text style={{ fontSize: 12, color: 'grey' }}>{eachComm?.auther_name}</Text>
-                                    <Text style={{ fontSize: 14, paddingVertical: 5 }}>{eachComm?.content}</Text>
-                                    <Text style={{ fontSize: 12, color: 'grey' }}>{eachComm.time} <Entypo name="location-pin" size={14} color="grey" />{eachComm?.location}</Text>
-                                </Pressable>
-                                <View style={{ width: '10%', flexDirection: 'column', alignItems: 'center', paddingTop: 10 }}>
-                                    <StarToSave onPress={v => flipCommentLike(v, eachComm.id)} type="heart" isSaved={eachComm.is_liked} size={15} />
-                                    {eachComm.like_count > 0 ? <Text style={{ fontSize: 10, marginTop: 10, color: eachComm.is_liked ? 'red' : 'grey' }}>{eachComm.like_count}</Text> : null}
-                                </View>
+                    selectedPost?.comments.slice(0, commentsDisplayIndex).map(eachComm => <View key={eachComm.id} style={{ flexDirection: 'row', paddingHorizontal: 15, flexWrap: 'wrap' }}>
+                        <View style={{ width: '15%', flexDirection: 'row', alignItems: 'center' }}>
+                            <ScaledImage source={{ uri: eachComm?.auther_image_url }} containerStyle={{ width: 30 }} style={{ borderRadius: 15 }}></ScaledImage>
+                        </View>
+                        <View style={{ width: '85%', paddingVertical: 15, borderBottomWidth: 1, borderBottomColor: 'lightcyan', flexDirection: 'row' }} >
+                            <Pressable onPress={() => {
+                                setcommentID(eachComm.id);
+                                textInputRef.current?.focus()
+                            }} style={{ width: '90%' }}>
+                                <Text style={{ fontSize: 12, color: 'grey' }}>{eachComm?.auther_name}</Text>
+                                <Text style={{ fontSize: 14, paddingVertical: 5 }}>{eachComm?.content}</Text>
+                                <Text style={{ fontSize: 12, color: 'grey' }}>{eachComm.time} <Entypo name="location-pin" size={14} color="grey" />{eachComm?.location}</Text>
+                            </Pressable>
+                            <View style={{ width: '10%', flexDirection: 'column', alignItems: 'center', paddingTop: 10 }}>
+                                <StarToSave onPress={v => flipCommentLike(v, eachComm.id)} type="heart" isSaved={eachComm.is_liked} size={15} />
+                                {eachComm.like_count > 0 ? <Text style={{ fontSize: 10, marginTop: 10, color: eachComm.is_liked ? 'red' : 'grey' }}>{eachComm.like_count}</Text> : null}
                             </View>
                         </View>
+                        <LoadMore style={{ width: '100%', paddingLeft: '15%' }} items={eachComm.replys} renderItem={reply => <View>
+                            <Text>{reply.content}</Text>
+                        </View>} />
                     </View >)
                 }
                 {

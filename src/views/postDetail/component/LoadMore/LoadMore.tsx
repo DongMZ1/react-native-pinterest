@@ -15,7 +15,7 @@ export const LoadMore = <T,>({ items, renderItem, style }: LoadMorePropsType<T>)
 
         {
             showAll ? items.map(each => renderItem(each)) : <>
-                renderItem(items[0])
+                {renderItem(items[0])}
                 {items.length > 1 ? <Pressable onPress={() => setshowAll(true)} style={{ paddingLeft: '10%', paddingVertical: 5 }}><Text>Load {items.length - 1} Replies</Text></Pressable> : null}
             </>
         }
