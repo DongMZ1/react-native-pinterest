@@ -29,7 +29,7 @@ export const getAllPostsApi = async ({ pageNum, type, filter }: { pageNum: numbe
                     id: faker.random.alpha(20),
                     content: faker.lorem.sentences(1),
                     location: faker.address.cityName(),
-                    like_count: Math.floor(Math.random() * 1000),
+                    like_count: Math.floor(Math.random() * 50),
                     is_liked: false,
                     auther_image_url: faker.image.people(500, 500, true),
                     replys: new Array(Math.floor(Math.random() * 20)).fill("").map(e => {

@@ -98,7 +98,7 @@ export const PostDetail = () => {
                 {
                     selectedPost && <View><Carousel images={selectedPost.images} /></View>
                 }
-                <View onTouchStart={onTouchStart} onTouchEnd={onTouchEnd} style={{ paddingHorizontal: 15 }}>
+                <View style={{ paddingHorizontal: 15 }}>
                     <Text style={{ fontSize: 20, fontWeight: '600', paddingVertical: 15 }}>{selectedPost?.title}</Text>
                     <Text style={{ fontSize: 14, }}>{selectedPost?.content}</Text>
                     <Text style={{ fontSize: 12, paddingVertical: 15, color: 'grey' }}>Edit : {selectedPost?.time}</Text>
@@ -107,30 +107,49 @@ export const PostDetail = () => {
                         textInputRef.current?.focus()
                     }} style={{ height: 40, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 15, backgroundColor: 'lavenderblush', borderRadius: 15, width: '100%', marginTop: 5 }}><Text style={{ color: 'lightgrey' }}>Share Your Opinion</Text></Pressable>
                 </View>
-                {
-                    selectedPost?.comments.slice(0, commentsDisplayIndex).map(eachComm => <View key={eachComm.id} style={{ flexDirection: 'row', paddingHorizontal: 15, flexWrap: 'wrap' }}>
-                        <View style={{ width: '15%', flexDirection: 'row', alignItems: 'center' }}>
-                            <ScaledImage source={{ uri: eachComm?.auther_image_url }} containerStyle={{ width: 30 }} style={{ borderRadius: 15 }}></ScaledImage>
-                        </View>
-                        <View style={{ width: '85%', paddingVertical: 15, borderBottomWidth: 1, borderBottomColor: 'lightcyan', flexDirection: 'row' }} >
-                            <Pressable onPress={() => {
-                                setcommentID(eachComm.id);
-                                textInputRef.current?.focus()
-                            }} style={{ width: '90%' }}>
-                                <Text style={{ fontSize: 12, color: 'grey' }}>{eachComm?.auther_name}</Text>
-                                <Text style={{ fontSize: 14, paddingVertical: 5 }}>{eachComm?.content}</Text>
-                                <Text style={{ fontSize: 12, color: 'grey' }}>{eachComm.time} <Entypo name="location-pin" size={14} color="grey" />{eachComm?.location}</Text>
-                            </Pressable>
-                            <View style={{ width: '10%', flexDirection: 'column', alignItems: 'center', paddingTop: 10 }}>
-                                <StarToSave onPress={v => flipCommentLike(v, eachComm.id)} type="heart" isSaved={eachComm.is_liked} size={15} />
-                                {eachComm.like_count > 0 ? <Text style={{ fontSize: 10, marginTop: 10, color: eachComm.is_liked ? 'red' : 'grey' }}>{eachComm.like_count}</Text> : null}
+                <View onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+                    {
+                        selectedPost?.comments.slice(0, commentsDisplayIndex).map(eachComm => <View key={eachComm.id} style={{ flexDirection: 'row', paddingHorizontal: 15, flexWrap: 'wrap', borderBottomWidth: 1, borderBottomColor: 'lightcyan', }}>
+                            <View style={{ width: '15%', flexDirection: 'row', alignItems: 'center' }}>
+                                <ScaledImage source={{ uri: eachComm?.auther_image_url }} containerStyle={{ width: 30 }} style={{ borderRadius: 15 }}></ScaledImage>
                             </View>
-                        </View>
-                        <LoadMore style={{ width: '100%', paddingLeft: '15%' }} items={eachComm.replys} renderItem={reply => <View>
-                            <Text>{reply.content}</Text>
-                        </View>} />
-                    </View >)
-                }
+                            <View style={{ width: '85%', paddingVertical: 15, flexDirection: 'row' }} >
+                                <Pressable onPress={() => {
+                                    setcommentID(eachComm.id);
+                                    textInputRef.current?.focus()
+                                }} style={{ width: '90%' }}>
+                                    <Text style={{ fontSize: 12, color: 'grey' }}>{eachComm?.auther_name}</Text>
+                                    <Text style={{ fontSize: 14, paddingVertical: 5 }}>{eachComm?.content}</Text>
+                                    <Text style={{ fontSize: 12, color: 'grey' }}>{eachComm.time} <Entypo name="location-pin" size={14} color="grey" />{eachComm?.location}</Text>
+                                </Pressable>
+                                <View style={{ width: '10%', flexDirection: 'column', alignItems: 'center', paddingTop: 10 }}>
+                                    <StarToSave onPress={v => flipCommentLike(v, eachComm.id)} type="heart" isSaved={eachComm.is_liked} size={15} />
+                                    {eachComm.like_count > 0 ? <Text style={{ fontSize: 10, marginTop: 10, color: eachComm.is_liked ? 'red' : 'grey' }}>{eachComm.like_count}</Text> : null}
+                                </View>
+                            </View>
+                            <LoadMore style={{ width: '100%', paddingLeft: '15%' }} items={eachComm.replys} renderItem={reply => <View style={{ flexDirection: 'row' }}>
+                                <View style={{ width: '15%', flexDirection: 'row', alignItems: 'center' }}>
+                                    <ScaledImage source={{ uri: reply?.auther_image_url }} containerStyle={{ width: 30 }} style={{ borderRadius: 15 }}></ScaledImage>
+                                </View>
+                                <View style={{ width: '85%', paddingVertical: 15, flexDirection: 'row' }} >
+                                    <Pressable onPress={() => {
+                                        setcommentID(eachComm.id);
+                                        textInputRef.current?.focus()
+                                    }} style={{ width: '90%' }}>
+                                        <Text style={{ fontSize: 12, color: 'grey' }}>{reply?.auther_name}</Text>
+                                        <Text style={{ fontSize: 14, paddingVertical: 5 }}>{reply?.content}</Text>
+                                        <Text style={{ fontSize: 12, color: 'grey' }}>{reply.time} <Entypo name="location-pin" size={14} color="grey" />{reply?.location}</Text>
+                                    </Pressable>
+                                    <View style={{ width: '10%', flexDirection: 'column', alignItems: 'center', paddingTop: 10 }}>
+                                        <StarToSave onPress={(v) => { }} type="heart" isSaved={reply.is_liked} size={15} />
+                                        {reply.like_count > 0 ? <Text style={{ fontSize: 10, marginTop: 10, color: reply.is_liked ? 'red' : 'grey' }}>{reply.like_count}</Text> : null}
+                                    </View>
+                                </View>
+                            </View>} />
+                        </View >)
+
+                    }
+                </View>
                 {
                     selectedPost?.comments.length as number <= commentsDisplayIndex ? <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'center', paddingVertical: 30 }}><Text style={{ fontSize: 10, color: 'grey' }}>-- THE END --</Text></View> : null
                 }
@@ -146,8 +165,4 @@ export const PostDetail = () => {
             <Pressable onPress={() => addPostCommentContent()} style={{ flex: 0.2, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}><Feather color={'grey'} name="send" size={25}></Feather></Pressable>
         </View>
     </View>
-}
-
-function onCommentLikeChange(arg0: {}): any {
-    throw new Error("Function not implemented.");
 }
