@@ -1,16 +1,17 @@
 import { Keyboard, LayoutChangeEvent, Modal, Platform, Pressable, SafeAreaView, Text, View } from 'react-native'
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Login } from './src/views/login/Login';
-import { Home } from './src/views/home/Home';
+import { LoginDisplay } from './src/views/login/LoginDisplay';
+import { HomeDisplay } from './src/views/home/HomeDisplay';
 import { AppRoutes } from './src/routes';
 import { Provider, useDispatch } from 'react-redux';
 import { store, useAppSelector } from './src/redux/store';
 import { useEffect } from 'react';
 import { authService } from './src/service/authService/authService';
 import { selectAuthIsLogin } from './src/redux/slices/authSlice';
-import { PostDetail } from './src/views/postDetail/PostDetail';
+import { PostDetailDisplay } from './src/views/postDetail/PostDetailDisplay';
 import { selectModalContentString, setKeyboardH, setModalContent, setSafeAreaViewDimension } from './src/redux/slices/utilitySlice';
+import { SearchDisplay } from './src/views/search/SearchDisplay';
 function App() {
     const isLogin = useAppSelector(selectAuthIsLogin)
     const modalContent = useAppSelector(selectModalContentString)
@@ -56,14 +57,14 @@ function App() {
                         <>
                             <AppRoutes.Screen options={{
                                 gestureEnabled: false,
-                            }} name='Home'>{() => <Home />}</AppRoutes.Screen>
-                            <AppRoutes.Screen name='PostDetail'>{() => <PostDetail />}</AppRoutes.Screen>
+                            }} name='Home'>{() => <HomeDisplay />}</AppRoutes.Screen>
+                            <AppRoutes.Screen name='PostDetail'>{() => <PostDetailDisplay />}</AppRoutes.Screen>
                             <AppRoutes.Screen options={{
                                 gestureEnabled: false,
-                            }} name='Saved'>{() => <View></View>}</AppRoutes.Screen>
+                            }} name='Search'>{() => <SearchDisplay />}</AppRoutes.Screen>
                         </>
                         :
-                        <AppRoutes.Screen name='Login'>{() => <Login />}</AppRoutes.Screen>
+                        <AppRoutes.Screen name='Login'>{() => <LoginDisplay />}</AppRoutes.Screen>
 
                     }
                 </AppRoutes.Navigator>

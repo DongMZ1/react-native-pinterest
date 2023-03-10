@@ -9,7 +9,7 @@ import { AppButton } from '../../shared/UIComponent/AppButton/AppButton';
 import { Dimensions } from 'react-native'
 import { CheckBox } from '@rneui/base';
 type LoginScreenRouteProp = NativeStackScreenProps<AppRoutesType, 'Login'>;
-export const Login = () => {
+export const LoginDisplay = () => {
     const [checked, setchecked] = useState(false)
     const navigator = useNavigation()
     return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>

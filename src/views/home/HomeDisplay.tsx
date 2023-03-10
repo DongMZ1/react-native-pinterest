@@ -11,7 +11,7 @@ import Entypo from 'react-native-vector-icons/Entypo'
 import Feather from 'react-native-vector-icons/Feather'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { HomePageCustomTabBar } from './homePageCustomTabBar/HomePageCustomTabBar';
-export const Home = () => {
+export const HomeDisplay = () => {
     const route = useRoute<RouteProp<AppRoutesType, "Home">>()
     const navigation = useNavigation()
     return <View style={{ flex: 1, flexDirection: 'column' }}>

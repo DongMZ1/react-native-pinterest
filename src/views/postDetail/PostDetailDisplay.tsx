@@ -19,7 +19,7 @@ import { PostCommentType, PostType } from "../../types/posts";
 import { WritableDraft } from "immer/dist/internal";
 import { LoadMore } from "./component/LoadMore/LoadMore";
 
-export const PostDetail = () => {
+export const PostDetailDisplay = () => {
     const id = useRoute<RouteProp<AppRoutesType, "PostDetail">>().params.post_id
     const navigation = useNavigation()
     const dispatch = useAppDispatch()

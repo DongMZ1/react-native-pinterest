@@ -7,8 +7,8 @@ import { HomeRoutesType } from "./homeRoutes/homeRoutes";
 export type AppRoutesType = {
     Home: NavigatorScreenParams<HomeRoutesType>,
     PostDetail: { post_id: string },
-    Saved: undefined,
     Login: undefined,
+    Search: {saved_posts?: boolean}
 }
 
 declare global {

@@ -1,5 +1,5 @@
 import { MaterialTopTabBarProps } from '@react-navigation/material-top-tabs';
-import { Animated, View, TouchableOpacity, Text } from 'react-native';
+import { Animated, View, TouchableOpacity, Text, Pressable } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5'
 
 export function HomePageCustomTabBar({ state, descriptors, navigation, position } : MaterialTopTabBarProps) {
@@ -64,7 +64,7 @@ export function HomePageCustomTabBar({ state, descriptors, navigation, position 
         );
       })}
       </View>
-      <View style={{width: '25%', flexDirection: 'row', marginBottom:5, justifyContent: 'center'}}><Icon name="search" size={20} color="grey" /></View>
+      <Pressable onPress={() => navigation.navigate('Search')} style={{width: '25%', flexDirection: 'row', marginBottom:5, justifyContent: 'center'}}><Icon name="search" size={20} color="grey" /></Pressable>
     </View>
   );
 }
