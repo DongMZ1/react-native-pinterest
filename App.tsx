@@ -12,6 +12,7 @@ import { selectAuthIsLogin } from './src/redux/slices/authSlice';
 import { PostDetailDisplay } from './src/views/postDetail/PostDetailDisplay';
 import { selectModalContentString, setKeyboardH, setModalContent, setSafeAreaViewDimension } from './src/redux/slices/utilitySlice';
 import { SearchDisplay } from './src/views/search/SearchDisplay';
+import { EventProvider } from 'react-native-outside-press';
 function App() {
     const isLogin = useAppSelector(selectAuthIsLogin)
     const modalContent = useAppSelector(selectModalContentString)
@@ -41,7 +42,7 @@ function App() {
     }, [])
 
     useEffect(() => {
-        if(modalContent){
+        if (modalContent) {
             setTimeout(() => dispatch(setModalContent('')), 1500)
         }
     }, [modalContent])
@@ -50,36 +51,38 @@ function App() {
         dispatch(setSafeAreaViewDimension({ height, width }))
     };
     return (
-        <SafeAreaView style={{ flex: 1}} onLayout={onSafeAreaLayout}>
-            <NavigationContainer theme={{ ...DefaultTheme, colors: { ...DefaultTheme.colors, background: 'white' } }}>
-                <AppRoutes.Navigator screenOptions={{ headerShown: false }} initialRouteName='Login' >
-                    {isLogin ?
-                        <>
-                            <AppRoutes.Screen options={{
-                                gestureEnabled: false,
-                            }} name='Home'>{() => <HomeDisplay />}</AppRoutes.Screen>
-                            <AppRoutes.Screen name='PostDetail'>{() => <PostDetailDisplay />}</AppRoutes.Screen>
-                            <AppRoutes.Screen options={{
-                                gestureEnabled: false,
-                            }} name='Search'>{() => <SearchDisplay />}</AppRoutes.Screen>
-                        </>
-                        :
-                        <AppRoutes.Screen name='Login'>{() => <LoginDisplay />}</AppRoutes.Screen>
+        <EventProvider style={{flex: 1}}>
+            <SafeAreaView style={{ flex: 1 }} onLayout={onSafeAreaLayout}>
+                <NavigationContainer theme={{ ...DefaultTheme, colors: { ...DefaultTheme.colors, background: 'white' } }}>
+                    <AppRoutes.Navigator screenOptions={{ headerShown: false }} initialRouteName='Login' >
+                        {isLogin ?
+                            <>
+                                <AppRoutes.Screen options={{
+                                    gestureEnabled: false,
+                                }} name='Home'>{() => <HomeDisplay />}</AppRoutes.Screen>
+                                <AppRoutes.Screen name='PostDetail'>{() => <PostDetailDisplay />}</AppRoutes.Screen>
+                                <AppRoutes.Screen options={{
+                                    gestureEnabled: false,
+                                }} name='Search'>{() => <SearchDisplay />}</AppRoutes.Screen>
+                            </>
+                            :
+                            <AppRoutes.Screen name='Login'>{() => <LoginDisplay />}</AppRoutes.Screen>
 
-                    }
-                </AppRoutes.Navigator>
-            </NavigationContainer>
-            <Modal 
-                animationType='fade'
-                style={{width: '100%', height: '100%'}}    
-                transparent={true}
-                visible={modalContent !== ''}
-            >
-                <Pressable style={{height: '100%', width: '100%', flexDirection:'row', justifyContent:'center', alignItems:'center', backgroundColor: 'rgba(0, 0, 0, 0.2)'}}>
-                    <View style={{minWidth: '50%', minHeight: 50, flexDirection:'row', justifyContent:'center', backgroundColor:'white', borderRadius: 20, alignItems:'center'}}><Text style={{fontSize: 14}}>{modalContent}</Text></View>
-                </Pressable>
-            </Modal>
-        </SafeAreaView>
+                        }
+                    </AppRoutes.Navigator>
+                </NavigationContainer>
+                <Modal
+                    animationType='fade'
+                    style={{ width: '100%', height: '100%' }}
+                    transparent={true}
+                    visible={modalContent !== ''}
+                >
+                    <Pressable style={{ height: '100%', width: '100%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.2)' }}>
+                        <View style={{ minWidth: '50%', minHeight: 50, flexDirection: 'row', justifyContent: 'center', backgroundColor: 'white', borderRadius: 20, alignItems: 'center' }}><Text style={{ fontSize: 14 }}>{modalContent}</Text></View>
+                    </Pressable>
+                </Modal>
+            </SafeAreaView>
+        </EventProvider>
     );
 }
 
