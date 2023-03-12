@@ -15,7 +15,9 @@ export const SearchDisplay = () => {
     const screenWidth = useAppSelector(selectSafeAreaViewDimension).width
     const [content, setcontent] = useState('')
     const [newContent, setnewContent] = useState('')
-    const [filterList, setfilterList] = useState<string[]>([])
+    const [filter, setfilter] = useState<'SAVED' | 'ALL'>('ALL')
+    const [sort, setsort] = useState<'NONE' | 'Number OF REPLIES' | 'TIME'>('NONE')
+    const [showSort, setshowSort] = useState(false)
     const [showFilter, setshowFilter] = useState(false)
     return <>
         <View style={{ flex: 1 }}>
@@ -43,17 +45,41 @@ export const SearchDisplay = () => {
                         setnewContent('')
                     }}><Entypo name="cross" size={25} /></Pressable> : null}
                 </View>
-                <OutsidePressHandler style={{width: '100%'}} onOutsidePress={() => setshowFilter(false)} disabled={false}>
-                <View style={{ height: 40, paddingTop: 10, width: '100%', flexDirection: 'row', paddingHorizontal: 20, alignItems: 'center' }}>
-                    <Pressable 
-                    onPress={() => setshowFilter(state => !state)}
-                    style={{ flexDirection: 'row', alignItems: 'center' }}><Text style={{ color: filterList.length > 0 ? 'red' : 'grey' }}>Filter</Text><MaterialIcon size={20} name={filterList.length > 0 ? "filter-check" : "filter"} color={filterList.length > 0 ? 'red' : 'grey'}></MaterialIcon></Pressable>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 20 }}><Text style={{ color: filterList.length > 0 ? 'red' : 'grey' }}>Sort By</Text><FontAwesomeIcon style={{ marginLeft: 5 }} size={20} color={'grey'} name="sort"></FontAwesomeIcon></View>
-                </View>
-                { showFilter &&
-                        <View style={{ width: screenWidth, height: 200, backgroundColor: 'red' }}></View>
-                    
-                }
+                <OutsidePressHandler style={{ width: '100%' }} onOutsidePress={() => {
+                    setshowFilter(false)
+                    setshowSort(false)
+                }} disabled={false}>
+                    <View style={{ height: 40, paddingTop: 10, width: '100%', flexDirection: 'row', paddingHorizontal: 20, alignItems: 'center' }}>
+                        <Pressable
+                            onPress={() => {
+                                setshowSort(false)
+                                setshowFilter(state => !state)
+                            }}
+                            style={{ flexDirection: 'row', alignItems: 'center', width: 90, paddingRight: 20 }}><Text style={{ color: filter === 'SAVED' ? 'red' : 'grey' }}>Filter</Text><MaterialIcon size={20} name={filter === 'SAVED' ? "filter-check" : "filter"} color={filter === 'SAVED' ? 'red' : 'grey'}></MaterialIcon></Pressable>
+                        <Pressable onPress={() => {
+                            setshowFilter(false)
+                            setshowSort(state => !state);
+                        }} style={{ flexDirection: 'row', alignItems: 'center' }}><Text style={{ color: sort !== 'NONE' ? 'red' : 'grey' }}>{sort === 'NONE' ? 'Sort By' : sort.replace('_', " ")}</Text><FontAwesomeIcon style={{ marginLeft: 5 }} size={20} color={sort === 'NONE' ? 'grey' : 'red'} name="sort"></FontAwesomeIcon></Pressable>
+                    </View>
+                    {showFilter &&
+                        <View style={{ width: screenWidth, height: 100, backgroundColor: 'white' }}>
+                            <Pressable onPress={() => setfilter('SAVED')} style={{ width: '100%', height: '50%', flexDirection: 'row', alignItems: 'center', paddingHorizontal: '10%' }}><Text style={{ color: 'grey' }}>SAVED POSTS</Text>{filter === 'SAVED' && <AntIcon name='check' size={20} style={{ marginLeft: 'auto' }} color={'grey'} />}</Pressable>
+                            <Pressable onPress={() => setfilter('ALL')} style={{ width: '100%', height: '50%', flexDirection: 'row', alignItems: 'center', paddingHorizontal: '10%' }}><Text style={{ color: 'grey' }}>ALL POSTS</Text>
+                                {filter === 'ALL' && <AntIcon name='check' size={20} style={{ marginLeft: 'auto' }} color={'grey'} />}
+                            </Pressable>
+                        </View>
+                    }
+                    {
+                        showSort && ['NONE', 'NUMBER OF REPLIES', 'TIME'].map(each => <View key={each} style={{ width: screenWidth, height: 50, backgroundColor: 'white' }}>
+                            <Pressable onPress={() => {
+                                setsort(each as "NONE" | "Number OF REPLIES" | "TIME")
+                            }} style={{ width: '100%', height: 50, flexDirection: 'row', alignItems: 'center', paddingHorizontal: '10%' }}>
+                                <Text style={{ color: 'grey' }}>{each}</Text>
+                                {sort === each && <AntIcon name='check' size={20} style={{ marginLeft: 'auto' }} color={'grey'} />}
+                            </Pressable>
+                        </View>
+                        )
+                    }
                 </OutsidePressHandler>
             </View>
             <ScrollView style={{ flex: 1 }}>
