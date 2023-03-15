@@ -123,7 +123,7 @@ export const PostDetailDisplay = () => {
                 <View onTouchStart={onTouchStart} onTouchEnd={onTouchEnd} style={{ paddingHorizontal: 15 }}>
                     <Text style={{ fontSize: 20, fontWeight: '600', paddingVertical: 15 }}>{selectedPost?.title}</Text>
                     <Text style={{ fontSize: 14, }}>{selectedPost?.content}</Text>
-                    <Text style={{ fontSize: 12, paddingVertical: 15, color: 'grey' }}>Edit : {selectedPost?.time}</Text>
+                    <Text style={{ fontSize: 12, paddingVertical: 15, color: 'grey' }}>Edit : {selectedPost?.date.toDateString()}</Text>
                     <View style={{ height: 1, backgroundColor: 'lightgray', marginBottom: 15 }}></View>
                     <Pressable onPress={() => {
                         textInputRef.current?.focus()

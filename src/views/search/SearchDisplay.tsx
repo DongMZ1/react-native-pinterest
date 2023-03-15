@@ -35,6 +35,7 @@ export const SearchDisplay = () => {
         items: allPosts,
         sort,
         filter,
+        content,
         renderItemsLength: numberOfRenderItems
     })
 
@@ -110,70 +111,81 @@ export const SearchDisplay = () => {
                     }
                 </OutsidePressHandler>
             </View>
-            {loading ? <View style={{ justifyContent: 'center', flexDirection: 'row', alignItems: 'center', flex: 1, }}><ActivityIndicator /></View> : <ScrollView
-                onScroll={(e) => {
-                    if (e.nativeEvent.contentOffset.y + e.nativeEvent.layoutMeasurement.height > e.nativeEvent.contentSize.height * 0.9) {
+            {loading ? <View style={{ justifyContent: 'center', flexDirection: 'row', alignItems: 'center', flex: 1, }}><ActivityIndicator /></View> :
+                <ScrollView
+                    onScroll={(e) => {
+                        if (e.nativeEvent.contentOffset.y + e.nativeEvent.layoutMeasurement.height > e.nativeEvent.contentSize.height * 0.9) {
 
-                    }
-                }}
-                contentContainerStyle={{ flexGrow: 1, flexDirection: 'row' }}
-                scrollEventThrottle={100}
-                style={{ backgroundColor: 'azure' }}
-            >
-                {[1, 0].map(eachColNumber =>
-                    <View key={eachColNumber} style={{ width: '50%' }}>{allPostsDisplay.map((item, key) => {
-                        //two colume layout by check the divident, rendering the flex row arrangment
-                        if (key % 2 === eachColNumber) {
-                            return null
                         }
-                        return <View key={item.id} style={{ borderRadius: 10, backgroundColor: 'white', padding: 4, margin: 4 }}>
-                            {item.images.length > 0 && <Pressable key={item.id} style={{ width: '100%' }} onPress={() => {
-                                navigation.navigate('PostDetail', { post_id: item.id })
-                            }}><ScaledImage showLoading source={{ uri: item.images[0] }} borderTopLeftRadius={10} borderTopRightRadius={10} /></Pressable>}
-                            <View style={{ flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap' }}>
-                                <Text onPress={() => navigation.navigate('PostDetail', { post_id: item.id })} numberOfLines={2} style={{ fontSize: 14, paddingHorizontal: 12, paddingTop: 2, width: '100%', paddingBottom: 5, fontFamily: 'Arial' }}>{item.title}</Text>
-                                <View style={{ width: '25%', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                                    <ScaledImage source={{ uri: item.auther_image_url }} containerStyle={{ width: 25 }} style={{ borderRadius: 15 }}></ScaledImage>
+                    }}
+                    contentContainerStyle={{ flexGrow: 1, flexDirection: 'row', flexWrap: 'wrap' }}
+                    scrollEventThrottle={100}
+                    style={{ backgroundColor: 'azure' }}
+                >
+                    {[1, 0].map(eachColNumber =>
+                        <View key={eachColNumber} style={{ width: '50%' }}>{allPostsDisplay.map((item, key) => {
+                            //two colume layout by check the divident, rendering the flex row arrangment
+                            if (key % 2 === eachColNumber) {
+                                return null
+                            }
+                            return <View key={item.id} style={{ borderRadius: 10, backgroundColor: 'white', padding: 4, margin: 4 }}>
+                                {item.images.length > 0 && <Pressable key={item.id} style={{ width: '100%' }} onPress={() => {
+                                    navigation.navigate('PostDetail', { post_id: item.id })
+                                }}><ScaledImage showLoading source={{ uri: item.images[0] }} borderTopLeftRadius={10} borderTopRightRadius={10} /></Pressable>}
+                                <View style={{ flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap' }}>
+                                    <Text onPress={() => navigation.navigate('PostDetail', { post_id: item.id })} numberOfLines={2} style={{ fontSize: 14, paddingHorizontal: 12, paddingTop: 2, width: '100%', paddingBottom: 5, fontFamily: 'Arial' }}>{item.title}</Text>
+                                    <View style={{ width: '25%', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                                        <ScaledImage source={{ uri: item.auther_image_url }} containerStyle={{ width: 25 }} style={{ borderRadius: 15 }}></ScaledImage>
+                                    </View>
+                                    <Text style={{ width: '55%', fontSize: 12, color: 'grey' }} numberOfLines={2}>
+                                        {sort === 'NONE' && item.auther_name}
+                                        {sort === 'NUMBER OF REPLIES' && `${item.comments.length} Of Replies`}
+                                        {sort === 'TIME' && item.date.toDateString()}
+                                    </Text>
+                                    <StarToSave style={{ width: '20%', paddingLeft: 5 }} onPress={(saved) => dispatch(savePost({
+                                        saved,
+                                        post_id: item.id
+                                    }))} isSaved={item.collected} />
                                 </View>
-                                <Text style={{ width: '55%', fontSize: 12, color: 'grey' }} numberOfLines={2}>
-                                    {sort === 'NONE' && item.auther_name}
-                                    {sort === 'NUMBER OF REPLIES' && `${item.comments.length} Of Replies`}
-                                    {sort === 'TIME' && item.date.toDateString()}
-                                </Text>
-                                <StarToSave style={{ width: '20%', paddingLeft: 5 }} onPress={(saved) => dispatch(savePost({
-                                    saved,
-                                    post_id: item.id
-                                }))} isSaved={item.collected} />
                             </View>
-                        </View>
-                    })}
-                    </View>)}
-            </ScrollView>}
+                        })}
+                        </View>)}
+                    {allPostsDisplay.length <= numberOfRenderItems ?
+                        <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'center', paddingVertical: 30 }}><Text style={{ fontSize: 10, color: 'grey' }}>-- THE END --</Text></View>
+                        : null
+                    }
+                </ScrollView>}
         </View>
     </>
 }
 
 type FilterSearchItemsPropsType = {
-     items: PostType[],
-     sort: sortType,
-     filter: filterType,
-     renderItemsLength: number
+    items: PostType[],
+    sort: sortType,
+    filter: filterType,
+    content: string,
+    renderItemsLength: number
 }
 
 const filterSearchItems = ({
     items,
     sort,
     filter,
+    content,
     renderItemsLength
-} : FilterSearchItemsPropsType) => {
-    if(sort === 'NUMBER OF REPLIES'){
+}: FilterSearchItemsPropsType) => {
+    if (sort === 'NUMBER OF REPLIES') {
         items = items.sort((a, b) => b.comments.length - a.comments.length)
     }
-    if(sort === 'TIME'){
-        items = items.sort((a, b) =>  a.date > b.date ?  -1 : 1)
+    if (sort === 'TIME') {
+        items = items.sort((a, b) => a.date > b.date ? -1 : 1)
     }
-    if(filter === 'SAVED'){
+    if (filter === 'SAVED') {
         items = items.filter(each => each.collected)
+    }
+
+    if (content){
+        items = items.filter(each => each.title.toLowerCase().includes(content.toLowerCase()) || each.content.toLowerCase().includes(content.toLowerCase()))
     }
     return items.slice(0, renderItemsLength)
 }

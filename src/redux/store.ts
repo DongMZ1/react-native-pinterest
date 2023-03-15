@@ -11,8 +11,8 @@ export const store = configureStore({
         utilitySlice
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
-        immutableCheck: { warnAfter: 128 },
-        serializableCheck: { warnAfter: 128 },
+        immutableCheck: false,
+        serializableCheck: false,
     })
 })
 
