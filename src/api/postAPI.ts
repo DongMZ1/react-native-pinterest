@@ -1,5 +1,6 @@
 import { faker } from "@faker-js/faker"
 import { PostType } from "../types/posts"
+import { v4 as uuidv4 } from 'uuid';
 export const getAllPostsApi = async ({ pageNum, type, filter }: { pageNum: number, filter?: { key: string, value: string }[], type: 'fasion' | 'nightLife' }): Promise<PostType[]> => {
     let queryString = new URLSearchParams()
     if (filter && filter.length) {
@@ -15,9 +16,9 @@ export const getAllPostsApi = async ({ pageNum, type, filter }: { pageNum: numbe
             time: faker.date.recent(20).toDateString(),
             content: faker.lorem.sentences(30),
             images: new Array(10).fill("").map(each => type === 'fasion' ? faker.image.fashion(480, imageHeight, true) : faker.image.nightlife(480, imageHeight, true)),
-            id: faker.random.alpha(20),
+            id: uuidv4(),
             auther_name: faker.name.fullName(),
-            auther_id: faker.random.alpha(20),
+            auther_id: uuidv4(),
             auther_image_url: faker.image.people(500, 500, true),
             location: faker.address.city(),
             collected: false,
