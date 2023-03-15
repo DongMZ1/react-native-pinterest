@@ -20,9 +20,15 @@ export const HomeDisplay = () => {
             <HomeRoutes.Screen name='Nearby' component={Nearby} />
         </HomeRoutes.Navigator>
         <View style={{ height: 50, width: '100%', backgroundColor: 'white', borderTopWidth: 1, borderTopColor: 'grey', flexDirection: 'row' }} >
-            <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+            <Pressable 
+            onPress={() => {
+                navigation.navigate('Search', {
+                    saved_posts: true
+                })
+            }}
+            style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                 <Feather name="bookmark" size={20} color="grey" /><Text style={{ color: 'grey', fontSize: 12 }}>SAVED</Text>
-            </View>
+            </Pressable>
             <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                 <Ionicons name="create-outline" size={20} color="grey" /><Text style={{ color: 'grey', fontSize: 12 }}>CREATE</Text>
             </View>

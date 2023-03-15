@@ -26,7 +26,7 @@ export const SearchDisplay = () => {
     const [content, setcontent] = useState('')
     const [loading, setloading] = useState(true)
     const [newContent, setnewContent] = useState('')
-    const [filter, setfilter] = useState<filterType>('ALL')
+    const [filter, setfilter] = useState<filterType>(routes.params?.saved_posts ? 'SAVED' : 'ALL')
     const [sort, setsort] = useState<sortType>('NONE')
     const [showSort, setshowSort] = useState(false)
     const [showFilter, setshowFilter] = useState(false)
