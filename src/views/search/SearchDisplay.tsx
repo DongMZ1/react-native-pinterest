@@ -1,6 +1,6 @@
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native"
-import { useRef, useState } from "react"
-import { Keyboard, Pressable, ScrollView, TextInput, TouchableWithoutFeedback, View, Text } from "react-native"
+import { useEffect, useRef, useState } from "react"
+import { Keyboard, Pressable, ScrollView, TextInput, TouchableWithoutFeedback, View, Text, ActivityIndicator } from "react-native"
 import AntIcon from 'react-native-vector-icons/AntDesign'
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome5'
@@ -14,11 +14,22 @@ export const SearchDisplay = () => {
     const routes = useRoute<RouteProp<AppRoutesType, 'Search'>>()
     const screenWidth = useAppSelector(selectSafeAreaViewDimension).width
     const [content, setcontent] = useState('')
+    const [loading, setloading] = useState(true)
     const [newContent, setnewContent] = useState('')
     const [filter, setfilter] = useState<'SAVED' | 'ALL'>('ALL')
     const [sort, setsort] = useState<'NONE' | 'Number OF REPLIES' | 'TIME'>('NONE')
     const [showSort, setshowSort] = useState(false)
     const [showFilter, setshowFilter] = useState(false)
+
+    useEffect(() => {
+        handleFilterChange()
+    }, [filter, sort, content])
+
+    const handleFilterChange = async () => {
+        setloading(true)
+        await new Promise(r => setTimeout(r, 1000))
+        setloading(false)
+    }
     return <>
         <View style={{ flex: 1 }}>
             <View style={{ width: '100%', flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', paddingVertical: 10 }}>
@@ -82,9 +93,9 @@ export const SearchDisplay = () => {
                     }
                 </OutsidePressHandler>
             </View>
-            <ScrollView style={{ flex: 1 }}>
+            {loading ? <View style={{ justifyContent: 'center', flexDirection: 'row', alignItems: 'center', flex: 1, }}><ActivityIndicator /></View> :<ScrollView style={{ flex: 1 }}>
 
-            </ScrollView>
+            </ScrollView>}
         </View>
     </>
 }

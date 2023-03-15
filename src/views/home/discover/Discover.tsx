@@ -1,5 +1,5 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
-import { View, Text, FlatList, Pressable, ScrollView, NativeSyntheticEvent, NativeScrollEvent, RefreshControl } from 'react-native'
+import { View, Text, FlatList, Pressable, ScrollView, NativeSyntheticEvent, NativeScrollEvent, RefreshControl, ActivityIndicator } from 'react-native'
 import { HomeRoutesType } from '../../../routes/homeRoutes/homeRoutes';
 import { useCallback, useEffect, useState } from 'react';
 import { getAllPosts } from '../../../service/postService/postService';
@@ -78,5 +78,5 @@ export const Discover = () => {
             </View>
             })}
         </View>)}
-    </ScrollView> : <View style={{ justifyContent: 'center', flexDirection: 'row', alignItems: 'center', height: '100%', }}><Text>Loading...</Text></View>
+    </ScrollView> : <View style={{ justifyContent: 'center', flexDirection: 'row', alignItems: 'center', height: '100%', }}><ActivityIndicator /></View>
 }
