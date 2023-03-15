@@ -13,7 +13,7 @@ export const getAllPostsApi = async ({ pageNum, type, filter }: { pageNum: numbe
         const imageHeight = Math.floor(Math.random() * 360) + 360
         return {
             title: faker.commerce.productName(),
-            time: faker.date.recent(20).toDateString(),
+            date: faker.date.recent(20),
             content: faker.lorem.sentences(30),
             images: new Array(10).fill("").map(each => type === 'fasion' ? faker.image.fashion(480, imageHeight, true) : faker.image.nightlife(480, imageHeight, true)),
             id: uuidv4(),

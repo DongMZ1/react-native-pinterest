@@ -24,7 +24,7 @@ export type PostCommentType = {
 }
 
 export type PostType = {
-    time: string,
+    date: Date,
     auther_name: string,
     title: string,
     content: string,

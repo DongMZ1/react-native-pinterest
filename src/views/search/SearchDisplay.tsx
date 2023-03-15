@@ -138,7 +138,7 @@ export const SearchDisplay = () => {
                                 <Text style={{ width: '55%', fontSize: 12, color: 'grey' }} numberOfLines={2}>
                                     {sort === 'NONE' && item.auther_name}
                                     {sort === 'NUMBER OF REPLIES' && `${item.comments.length} Of Replies`}
-                                    {sort === 'TIME' && item.time}
+                                    {sort === 'TIME' && item.date.toDateString()}
                                 </Text>
                                 <StarToSave style={{ width: '20%', paddingLeft: 5 }} onPress={(saved) => dispatch(savePost({
                                     saved,
@@ -170,7 +170,7 @@ const filterSearchItems = ({
         items = items.sort((a, b) => b.comments.length - a.comments.length)
     }
     if(sort === 'TIME'){
-        items = items.sort((a, b) =>  b.time > a.time ? 1 : -1)
+        items = items.sort((a, b) =>  a.date > b.date ?  -1 : 1)
     }
     if(filter === 'SAVED'){
         items = items.filter(each => each.collected)
