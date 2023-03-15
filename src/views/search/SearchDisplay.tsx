@@ -84,16 +84,19 @@ export const SearchDisplay = () => {
                                 setshowSort(false)
                                 setshowFilter(state => !state)
                             }}
-                            style={{ flexDirection: 'row', alignItems: 'center', width: 90, paddingRight: 20 }}><Text style={{ color: filter === 'SAVED' ? 'red' : 'grey' }}>Filter</Text><MaterialIcon size={20} name={filter === 'SAVED' ? "filter-check" : "filter"} color={filter === 'SAVED' ? 'red' : 'grey'}></MaterialIcon></Pressable>
+                            style={{ flexDirection: 'row', alignItems: 'center', width: 90, paddingRight: 20 }}><Text style={{ color: filter === 'SAVED' ? 'red' : 'grey' }}>{filter === 'ALL' ? 'FILTER' : 'SAVED'}</Text><MaterialIcon size={20} name={filter === 'SAVED' ? "filter-check" : "filter"} color={filter === 'SAVED' ? 'red' : 'grey'}></MaterialIcon></Pressable>
                         <Pressable onPress={() => {
                             setshowFilter(false)
                             setshowSort(state => !state);
-                        }} style={{ flexDirection: 'row', alignItems: 'center' }}><Text style={{ color: sort !== 'NONE' ? 'red' : 'grey' }}>{sort === 'NONE' ? 'Sort By' : sort.replace('_', " ")}</Text><FontAwesomeIcon style={{ marginLeft: 5 }} size={20} color={sort === 'NONE' ? 'grey' : 'red'} name="sort"></FontAwesomeIcon></Pressable>
+                        }} style={{ flexDirection: 'row', alignItems: 'center' }}><Text style={{ color: sort !== 'NONE' ? 'red' : 'grey' }}>{sort === 'NONE' ? 'SORT BY' : sort.replace('_', " ")}</Text><FontAwesomeIcon style={{ marginLeft: 5 }} size={20} color={sort === 'NONE' ? 'grey' : 'red'} name="sort"></FontAwesomeIcon></Pressable>
                     </View>
                     {showFilter &&
                         <View style={{ width: screenWidth, height: 100, backgroundColor: 'white' }}>
-                            <Pressable onPress={() => setfilter('SAVED')} style={{ width: '100%', height: '50%', flexDirection: 'row', alignItems: 'center', paddingHorizontal: '10%' }}><Text style={{ color: 'grey' }}>SAVED POSTS</Text>{filter === 'SAVED' && <AntIcon name='check' size={20} style={{ marginLeft: 'auto' }} color={'grey'} />}</Pressable>
-                            <Pressable onPress={() => setfilter('ALL')} style={{ width: '100%', height: '50%', flexDirection: 'row', alignItems: 'center', paddingHorizontal: '10%' }}><Text style={{ color: 'grey' }}>ALL POSTS</Text>
+                            <Pressable onPress={() => {
+                                setfilter('SAVED')
+                                setshowFilter(false)
+                        }} style={{ width: '100%', height: '50%', flexDirection: 'row', alignItems: 'center', paddingHorizontal: '10%' }}><Text style={{ color: 'grey' }}>SAVED POSTS</Text>{filter === 'SAVED' && <AntIcon name='check' size={20} style={{ marginLeft: 'auto' }} color={'grey'} />}</Pressable>
+                            <Pressable onPress={() => {setfilter('ALL'); setshowFilter(false)}} style={{ width: '100%', height: '50%', flexDirection: 'row', alignItems: 'center', paddingHorizontal: '10%' }}><Text style={{ color: 'grey' }}>ALL POSTS</Text>
                                 {filter === 'ALL' && <AntIcon name='check' size={20} style={{ marginLeft: 'auto' }} color={'grey'} />}
                             </Pressable>
                         </View>
@@ -102,6 +105,7 @@ export const SearchDisplay = () => {
                         showSort && ['NONE', 'NUMBER OF REPLIES', 'TIME'].map(each => <View key={each} style={{ width: screenWidth, height: 50, backgroundColor: 'white' }}>
                             <Pressable onPress={() => {
                                 setsort(each as sortType)
+                                setshowSort(false)
                             }} style={{ width: '100%', height: 50, flexDirection: 'row', alignItems: 'center', paddingHorizontal: '10%' }}>
                                 <Text style={{ color: 'grey' }}>{each}</Text>
                                 {sort === each && <AntIcon name='check' size={20} style={{ marginLeft: 'auto' }} color={'grey'} />}
@@ -139,7 +143,7 @@ export const SearchDisplay = () => {
                                     </View>
                                     <Text style={{ width: '55%', fontSize: 12, color: 'grey' }} numberOfLines={2}>
                                         {sort === 'NONE' && item.auther_name}
-                                        {sort === 'NUMBER OF REPLIES' && `${item.comments.length} Of Replies`}
+                                        {sort === 'NUMBER OF REPLIES' && `${item.comments.length} Replies`}
                                         {sort === 'TIME' && item.date.toDateString()}
                                     </Text>
                                     <StarToSave style={{ width: '20%', paddingLeft: 5 }} onPress={(saved) => dispatch(savePost({
