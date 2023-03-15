@@ -13,6 +13,7 @@ import { PostDetailDisplay } from './src/views/postDetail/PostDetailDisplay';
 import { selectModalContentString, setKeyboardH, setModalContent, setSafeAreaViewDimension } from './src/redux/slices/utilitySlice';
 import { SearchDisplay } from './src/views/search/SearchDisplay';
 import { EventProvider } from 'react-native-outside-press';
+import { CreatePost } from './src/views/create/CreatePost';
 function App() {
     const isLogin = useAppSelector(selectAuthIsLogin)
     const modalContent = useAppSelector(selectModalContentString)
@@ -64,6 +65,10 @@ function App() {
                                 <AppRoutes.Screen options={{
                                     gestureEnabled: false,
                                 }} name='Search'>{() => <SearchDisplay />}</AppRoutes.Screen>
+                                <AppRoutes.Screen options={{
+                                    gestureDirection:'vertical',
+                                    presentation: 'modal'
+                                }} name='Create'>{() =><CreatePost />}</AppRoutes.Screen>
                             </>
                             :
                             <AppRoutes.Screen name='Login'>{() => <LoginDisplay />}</AppRoutes.Screen>

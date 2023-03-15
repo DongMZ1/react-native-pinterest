@@ -29,12 +29,11 @@ export const HomeDisplay = () => {
             style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                 <Feather name="bookmark" size={20} color="grey" /><Text style={{ color: 'grey', fontSize: 12 }}>SAVED</Text>
             </Pressable>
-            <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+            <Pressable onPress={() => navigation.navigate("Create")} style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                 <Ionicons name="create-outline" size={20} color="grey" /><Text style={{ color: 'grey', fontSize: 12 }}>CREATE</Text>
-            </View>
-            <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-            <Pressable onPress={() => authService.signOut()} style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}><Entypo name="log-out" size={20} color="red" /><Text style={{color: 'red', fontSize: 12}}>LOG OUT</Text></Pressable>
-            </View>
+            </Pressable>
+            <Pressable onPress={() => authService.signOut()} style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', flex: 1}}><Entypo name="log-out" size={20} color="red" /><Text style={{color: 'red', fontSize: 12}}>LOG OUT</Text>
+            </Pressable>
         </View>
     </View>
 }

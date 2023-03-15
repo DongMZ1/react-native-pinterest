@@ -8,7 +8,8 @@ export type AppRoutesType = {
     Home: NavigatorScreenParams<HomeRoutesType>,
     PostDetail: { post_id: string },
     Login: undefined,
-    Search: {saved_posts?: boolean}
+    Search: {saved_posts?: boolean},
+    Create: undefined
 }
 
 declare global {
