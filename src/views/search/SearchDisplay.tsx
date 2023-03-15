@@ -16,7 +16,7 @@ import { savePost, selectPostsDiscover, selectPostsNearby } from "../../redux/sl
 import { PostType } from "../../types/posts"
 
 type filterType = 'SAVED' | 'ALL'
-type sortType = 'NONE' | 'Number OF REPLIES' | 'TIME'
+type sortType = 'NONE' | 'NUMBER OF REPLIES' | 'TIME'
 export const SearchDisplay = () => {
     const navigation = useNavigation()
     const routes = useRoute<RouteProp<AppRoutesType, 'Search'>>()
@@ -120,7 +120,7 @@ export const SearchDisplay = () => {
                 scrollEventThrottle={100}
                 style={{ backgroundColor: 'azure' }}
             >
-                {[0, 1].map(eachColNumber =>
+                {[1, 0].map(eachColNumber =>
                     <View key={eachColNumber} style={{ width: '50%' }}>{allPostsDisplay.map((item, key) => {
                         //two colume layout by check the divident, rendering the flex row arrangment
                         if (key % 2 === eachColNumber) {
@@ -135,7 +135,11 @@ export const SearchDisplay = () => {
                                 <View style={{ width: '25%', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
                                     <ScaledImage source={{ uri: item.auther_image_url }} containerStyle={{ width: 25 }} style={{ borderRadius: 15 }}></ScaledImage>
                                 </View>
-                                <Text style={{ width: '55%', fontSize: 12, color: 'grey' }} numberOfLines={2}>{item.auther_name}</Text>
+                                <Text style={{ width: '55%', fontSize: 12, color: 'grey' }} numberOfLines={2}>
+                                    {sort === 'NONE' && item.auther_name}
+                                    {sort === 'NUMBER OF REPLIES' && `${item.comments.length} Of Replies`}
+                                    {sort === 'TIME' && item.time}
+                                </Text>
                                 <StarToSave style={{ width: '20%', paddingLeft: 5 }} onPress={(saved) => dispatch(savePost({
                                     saved,
                                     post_id: item.id
@@ -162,7 +166,7 @@ const filterSearchItems = ({
     filter,
     renderItemsLength
 } : FilterSearchItemsPropsType) => {
-    if(sort === 'Number OF REPLIES'){
+    if(sort === 'NUMBER OF REPLIES'){
         items = items.sort((a, b) => b.comments.length - a.comments.length)
     }
     if(sort === 'TIME'){
