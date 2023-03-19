@@ -18,7 +18,15 @@ export const CreatePost = () => {
             // console.log(response);
             if (response.assets) {
                 setPhoto(photos ? [...photos, ...response.assets] : response.assets);
-                setopacities([...opacities, ...response.assets.map(each => new Animated.Value(1))])
+                const newOPs = response.assets.map(each => new Animated.Value(0))
+                setopacities(opacities => opacities.concat(newOPs))
+                newOPs.forEach(each => {
+                    Animated.timing(each, {
+                        toValue: 1,
+                        duration: 2000,
+                        useNativeDriver: false
+                    }).start()
+                })
             }
         });
     };
