@@ -44,7 +44,7 @@ export const CreatePost = () => {
                     {
                         photos?.map((each, key) => <Animated.View style={{ width: 140, height: 140, marginRight: 10, position: 'relative', opacity: opacities[key] }}><Image source={{ uri: each.uri }} style={{ width: 140, height: 140 }} borderRadius={20} /><Pressable style={{ height: 25, width: 25, borderRadius: 15, backgroundColor: 'white', position: 'absolute', right: 10, top: 10 }} onPress={() => deletePhoto(key)}><EntypoIcon name='circle-with-cross' size={25} /></Pressable></Animated.View>)
                     }
-                    <Pressable onPress={handleChoosePhoto} style={{ width: 140, height: 140, backgroundColor: 'lightgrey', borderRadius: 20 }}></Pressable>
+                    <Pressable onPress={handleChoosePhoto} style={{ width: 140, height: 140, backgroundColor: 'lightgrey', borderRadius: 20, flexDirection:'row', alignItems: 'center', justifyContent: 'center' }}><AntIcon name='pluscircle' size={25} color={'grey'} /></Pressable>
                 </ScrollView>
             </ScrollView>
         </KeyboardAvoidingView>
