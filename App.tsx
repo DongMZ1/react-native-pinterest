@@ -67,7 +67,7 @@ function App() {
                                 }} name='Search'>{() => <SearchDisplay />}</AppRoutes.Screen>
                                 <AppRoutes.Screen options={{
                                     gestureDirection:'vertical',
-                                    presentation: 'modal'
+                                    presentation: 'containedModal'
                                 }} name='Create'>{() =><CreatePost />}</AppRoutes.Screen>
                             </>
                             :

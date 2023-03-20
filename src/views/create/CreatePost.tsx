@@ -1,13 +1,26 @@
 import { useNavigation } from '@react-navigation/native'
 import { useEffect, useRef, useState } from 'react'
-import { KeyboardAvoidingView, Pressable, ScrollView, View, Image, Animated } from 'react-native'
+import { KeyboardAvoidingView, Pressable, ScrollView, View, Image, Animated, TextInput, Keyboard } from 'react-native'
 import AntIcon from 'react-native-vector-icons/AntDesign'
 import { Asset, ImagePickerResponse, launchImageLibrary } from 'react-native-image-picker'
 import EntypoIcon from 'react-native-vector-icons/Entypo'
+import { useAppSelector } from '../../redux/store'
+import { selectKeyboard } from '../../redux/slices/utilitySlice'
 export const CreatePost = () => {
     const navigation = useNavigation()
+    const headerHeight = 50
+    const footerHeight = 50
     const [photos, setPhoto] = useState<Asset[]>([]);
     const [opacities, setopacities] = useState<Animated.Value[]>([])
+    const [title, settitle] = useState('')
+    const keyboardHeight = useAppSelector(selectKeyboard).keyboardheight
+    const [viewHeight, setviewHeight] = useState(0)
+    const scrollHeight = viewHeight - keyboardHeight - headerHeight - footerHeight
+    const currentScrollHeight = useRef(new Animated.Value(scrollHeight)).current
+
+    useEffect(() => {
+        Animated.timing(currentScrollHeight, { toValue: scrollHeight, useNativeDriver: false, duration: 150 }).start()
+    }, [scrollHeight])
 
     const handleChoosePhoto = () => {
         launchImageLibrary({
@@ -41,20 +54,36 @@ export const CreatePost = () => {
             })
         }
     }
-    return <><View style={{ height: 50 }}>
-        <Pressable onPress={() => navigation.goBack()} style={{ width: '20%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-            <AntIcon name="back" size={24} color="black" />
-        </Pressable>
-    </View>
-        <KeyboardAvoidingView behavior='padding' style={{ flex: 1 }}>
+    return <View style={{ flex: 1 }} onLayout={event => {
+        const { width, height } = event.nativeEvent.layout;
+        setviewHeight(height)
+    }}>
+        <View style={{ height: headerHeight }}>
+            <Pressable onPress={() => navigation.goBack()} style={{ width: '20%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+                <AntIcon name="back" size={24} color="black" />
+            </Pressable>
+        </View>
+        <Animated.View style={{ height: currentScrollHeight }}>
             <ScrollView style={{ flex: 1 }}>
                 <ScrollView showsHorizontalScrollIndicator={false} horizontal style={{ height: 160 }} contentContainerStyle={{ paddingHorizontal: 10, paddingVertical: 10 }}>
                     {
                         photos?.map((each, key) => <Animated.View style={{ width: 140, height: 140, marginRight: 10, position: 'relative', opacity: opacities[key] }}><Image source={{ uri: each.uri }} style={{ width: 140, height: 140 }} borderRadius={20} /><Pressable style={{ height: 25, width: 25, borderRadius: 15, backgroundColor: 'white', position: 'absolute', right: 10, top: 10 }} onPress={() => deletePhoto(key)}><EntypoIcon name='circle-with-cross' size={25} /></Pressable></Animated.View>)
                     }
-                    <Pressable onPress={handleChoosePhoto} style={{ width: 140, height: 140, backgroundColor: 'lightgrey', borderRadius: 20, flexDirection:'row', alignItems: 'center', justifyContent: 'center' }}><AntIcon name='pluscircle' size={25} color={'grey'} /></Pressable>
+                    <Pressable onPress={handleChoosePhoto} style={{ width: 140, height: 140, backgroundColor: 'lightgrey', borderRadius: 20, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}><AntIcon name='pluscircle' size={25} color={'grey'} /></Pressable>
                 </ScrollView>
+                <TextInput
+                    placeholder='Please Enter A Title'
+                    style={{ borderRadius: 10, backgroundColor: 'azure', height: 40, marginHorizontal: 10, paddingHorizontal: 20 }} />
+                <TextInput
+                    placeholder='Please Enter Main Title'
+                    multiline
+                    style={{ borderRadius: 10, backgroundColor: 'azure', marginHorizontal: 10, marginTop: 10, paddingHorizontal: 20, height: 200 }} />
             </ScrollView>
-        </KeyboardAvoidingView>
-    </>
+        </Animated.View>
+        {keyboardHeight === 0 ? <View onPress={() => Keyboard.dismiss()} style={{ height: footerHeight, backgroundColor: 'blue', width: '100%' }}>
+
+        </View> : <Pressable onPress={() => Keyboard.dismiss()} style={{ height: footerHeight, backgroundColor: 'red', width: '100%' }}>
+
+        </Pressable>}
+    </View>
 }
