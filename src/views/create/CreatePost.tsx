@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native'
 import { useEffect, useRef, useState } from 'react'
-import { KeyboardAvoidingView, Pressable, ScrollView, View, Image, Animated, TextInput, Keyboard } from 'react-native'
+import { KeyboardAvoidingView, Pressable, ScrollView, View, Image, Animated, TextInput, Keyboard, Text } from 'react-native'
 import AntIcon from 'react-native-vector-icons/AntDesign'
 import { Asset, ImagePickerResponse, launchImageLibrary } from 'react-native-image-picker'
 import EntypoIcon from 'react-native-vector-icons/Entypo'
@@ -13,6 +13,7 @@ export const CreatePost = () => {
     const [photos, setPhoto] = useState<Asset[]>([]);
     const [opacities, setopacities] = useState<Animated.Value[]>([])
     const [title, settitle] = useState('')
+    const [content, setcontent] = useState('')
     const keyboardHeight = useAppSelector(selectKeyboard).keyboardheight
     const [viewHeight, setviewHeight] = useState(0)
     const scrollHeight = viewHeight - keyboardHeight - headerHeight - footerHeight
@@ -77,13 +78,13 @@ export const CreatePost = () => {
                 <TextInput
                     placeholder='Please Enter Main Title'
                     multiline
-                    style={{ borderRadius: 10, backgroundColor: 'azure', marginHorizontal: 10, marginTop: 10, paddingHorizontal: 20, height: 200 }} />
+                    style={{ borderRadius: 10, backgroundColor: 'azure', marginHorizontal: 10, marginTop: 10, paddingHorizontal: 20, height: 200, paddingTop: 15 }} />
             </ScrollView>
         </Animated.View>
-        {keyboardHeight === 0 ? <View onPress={() => Keyboard.dismiss()} style={{ height: footerHeight, backgroundColor: 'blue', width: '100%' }}>
-
-        </View> : <Pressable onPress={() => Keyboard.dismiss()} style={{ height: footerHeight, backgroundColor: 'red', width: '100%' }}>
-
-        </Pressable>}
+        {keyboardHeight === 0 ?
+            <Pressable style={{ height: footerHeight, width: '100%', paddingHorizontal: 20, alignItems: 'center', flexDirection: 'row', justifyContent:'center' }} onPress={() => Keyboard.dismiss()}><Text style={{ fontSize: 15, color: 'red' }}>CREATE POST</Text></Pressable>
+            : <View style={{ height: footerHeight, width: '100%', flexDirection: 'row', paddingHorizontal: 20, alignItems: 'center', justifyContent: 'center' }}>
+                <Pressable onPress={() => Keyboard.dismiss()}><Text style={{ fontSize: 15 }}>FINISH EDIT</Text></Pressable>
+            </View>}
     </View>
 }
