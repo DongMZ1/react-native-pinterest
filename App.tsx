@@ -44,7 +44,10 @@ function App() {
 
     useEffect(() => {
         if (modalContent) {
-            setTimeout(() => dispatch(setModalContent('')), 1500)
+            setTimeout(() => dispatch(setModalContent({
+                content: '',
+                alert: false
+            })), 1500)
         }
     }, [modalContent])
     const onSafeAreaLayout = (event: LayoutChangeEvent) => {
@@ -80,10 +83,10 @@ function App() {
                     animationType='fade'
                     style={{ width: '100%', height: '100%' }}
                     transparent={true}
-                    visible={modalContent !== ''}
+                    visible={modalContent.content !== ''}
                 >
                     <Pressable style={{ height: '100%', width: '100%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.2)' }}>
-                        <View style={{ minWidth: '50%', minHeight: 50, flexDirection: 'row', justifyContent: 'center', backgroundColor: 'white', borderRadius: 20, alignItems: 'center' }}><Text style={{ fontSize: 14 }}>{modalContent}</Text></View>
+                        <View style={{ minWidth: '50%', minHeight: 50, flexDirection: 'row', justifyContent: 'center', backgroundColor: 'white', borderRadius: 20, alignItems: 'center' }}><Text style={{ fontSize: 14, color: modalContent.alert ? 'red' : 'black' }}>{modalContent.content}</Text></View>
                     </Pressable>
                 </Modal>
             </SafeAreaView>

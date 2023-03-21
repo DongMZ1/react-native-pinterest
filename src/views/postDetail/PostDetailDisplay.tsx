@@ -50,7 +50,7 @@ export const PostDetailDisplay = () => {
                 post_id: selectedPost?.id!,
                 comment_content: content
             }))
-            dispatch(setModalContent('Sent!'))
+            dispatch(setModalContent({content:'Sent!'}))
         }
 
         if (content && commentID) {
@@ -60,7 +60,7 @@ export const PostDetailDisplay = () => {
                 reply_id: replyID,
                 content,
             }))
-            dispatch(setModalContent('Replied!'))
+            dispatch(setModalContent({content:'Replied!'}))
         }
         setcommentID('')
         setcontent('')

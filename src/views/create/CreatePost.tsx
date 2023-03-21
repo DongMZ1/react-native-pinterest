@@ -4,12 +4,13 @@ import { KeyboardAvoidingView, Pressable, ScrollView, View, Image, Animated, Tex
 import AntIcon from 'react-native-vector-icons/AntDesign'
 import { Asset, ImagePickerResponse, launchImageLibrary } from 'react-native-image-picker'
 import EntypoIcon from 'react-native-vector-icons/Entypo'
-import { useAppSelector } from '../../redux/store'
-import { selectKeyboard } from '../../redux/slices/utilitySlice'
+import { useAppDispatch, useAppSelector } from '../../redux/store'
+import { selectKeyboard, setModalContent } from '../../redux/slices/utilitySlice'
 export const CreatePost = () => {
     const navigation = useNavigation()
     const headerHeight = 50
     const footerHeight = 50
+    const dispatch = useAppDispatch();
     const [photos, setPhoto] = useState<Asset[]>([]);
     const [opacities, setopacities] = useState<Animated.Value[]>([])
     const [title, settitle] = useState('')
@@ -45,6 +46,23 @@ export const CreatePost = () => {
         });
     };
 
+    const submit = () => {
+        if (photos.length === 0) {
+            dispatch(setModalContent({content :'At least A Photo Is Required!', alert: true}))
+            return
+        }
+        if(!title){
+            dispatch(setModalContent({content: 'Title Is Required!', alert: true}))
+            return
+        }
+        if(!content){
+            dispatch(setModalContent({content: 'Content Is Required!', alert: true}))
+            return
+        }
+        dispatch(setModalContent({content:'Posted!'}))
+        navigation.goBack()
+    }
+
 
     const deletePhoto = (key: number) => {
         if (opacities?.[key]) {
@@ -73,16 +91,20 @@ export const CreatePost = () => {
                     <Pressable onPress={handleChoosePhoto} style={{ width: 140, height: 140, backgroundColor: 'lightgrey', borderRadius: 20, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}><AntIcon name='pluscircle' size={25} color={'grey'} /></Pressable>
                 </ScrollView>
                 <TextInput
+                    value={title}
+                    onChangeText={text => settitle(text)}
                     placeholder='Please Enter A Title'
                     style={{ borderRadius: 10, backgroundColor: 'azure', height: 40, marginHorizontal: 10, paddingHorizontal: 20 }} />
                 <TextInput
+                    value={content}
+                    onChangeText={text => setcontent(text)}
                     placeholder='Please Enter Main Title'
                     multiline
                     style={{ borderRadius: 10, backgroundColor: 'azure', marginHorizontal: 10, marginTop: 10, paddingHorizontal: 20, height: 200, paddingTop: 15 }} />
             </ScrollView>
         </Animated.View>
         {keyboardHeight === 0 ?
-            <Pressable style={{ height: footerHeight, width: '100%', paddingHorizontal: 20, alignItems: 'center', flexDirection: 'row', justifyContent:'center' }} onPress={() => Keyboard.dismiss()}><Text style={{ fontSize: 15, color: 'red' }}>CREATE POST</Text></Pressable>
+            <Pressable style={{ height: footerHeight, width: '100%', paddingHorizontal: 20, alignItems: 'center', flexDirection: 'row', justifyContent: 'center' }} onPress={submit}><Text style={{ fontSize: 15, color: 'red' }}>CREATE POST</Text></Pressable>
             : <View style={{ height: footerHeight, width: '100%', flexDirection: 'row', paddingHorizontal: 20, alignItems: 'center', justifyContent: 'center' }}>
                 <Pressable onPress={() => Keyboard.dismiss()}><Text style={{ fontSize: 15 }}>FINISH EDIT</Text></Pressable>
             </View>}

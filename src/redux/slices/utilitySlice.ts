@@ -10,7 +10,10 @@ type UtilitySliceInitialStateType = {
     keyboard:{
         keyboardheight: number
     },
-    modalContent: string
+    modalContent: {
+        content: string
+        alert: boolean
+    }
 }
 
 const initialState : UtilitySliceInitialStateType  = {
@@ -21,7 +24,10 @@ const initialState : UtilitySliceInitialStateType  = {
     keyboard: {
         keyboardheight: 0
     },
-    modalContent: ''
+    modalContent: {
+        content: '',
+        alert: false
+    }
 }
 export const utilitySlice = createSlice({
     name: 'utility',
@@ -38,8 +44,9 @@ export const utilitySlice = createSlice({
             state.keyboard.keyboardheight = action.payload
         },
 
-        setModalContent: (state, action: PayloadAction<string>) => {
-            state.modalContent = action.payload;
+        setModalContent: (state, action: PayloadAction<{content: string, alert ?: boolean}>) => {
+            state.modalContent.content = action.payload.content;
+            state.modalContent.alert = action.payload.content ? true : false
         }
     },
 })
