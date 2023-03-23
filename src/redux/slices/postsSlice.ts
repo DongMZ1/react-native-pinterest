@@ -4,6 +4,7 @@ import { PostCommentReplyType, PostCommentType, PostType } from '../../types/pos
 import { faker } from '@faker-js/faker'
 import produce from "immer"
 import { WritableDraft } from 'immer/dist/internal'
+import { userProfile } from '../../utility/constants/constants'
 
 type PostsSliceInitialStateType = {
     discoverPosts: PostType[],
@@ -62,8 +63,8 @@ export const postsSlice = createSlice({
                     const post = draft.find(each => each.id === post_id) as PostType
                     post.comments = [{
                         time: faker.date.recent().toDateString(),
-                        auther_id: 'you',
-                        auther_name: 'react-nativer ( yourself )',
+                        auther_id: userProfile.id,
+                        auther_name: userProfile.name,
                         id: faker.random.alpha(20) + comment_content,
                         content: comment_content,
                         location: 'vancouver',
@@ -79,8 +80,8 @@ export const postsSlice = createSlice({
                     const post = draft.find(each => each.id === post_id) as PostType
                     post.comments = [{
                         time: faker.date.recent().toDateString(),
-                        auther_id: 'you',
-                        auther_name: 'react-nativer ( yourself )',
+                        auther_id: userProfile.id,
+                        auther_name: userProfile.name,
                         id: faker.random.alpha(20) + comment_content,
                         content: comment_content,
                         location: 'vancouver',
@@ -162,8 +163,8 @@ export const postsSlice = createSlice({
                     const comment = post.comments.find(each => each.id === comment_id) as WritableDraft<PostCommentType>
                     comment.replys.push({
                         time: faker.date.recent().toDateString(),
-                        auther_id: 'you',
-                        auther_name: 'react-nativer ( yourself )',
+                        auther_id: userProfile.id,
+                        auther_name: userProfile.name,
                         id: faker.random.alpha(20) + content,
                         content: content,
                         location: 'vancouver',
@@ -180,8 +181,8 @@ export const postsSlice = createSlice({
                     const comment = post.comments.find(each => each.id === comment_id) as WritableDraft<PostCommentType>
                     comment.replys.push({
                         time: faker.date.recent().toDateString(),
-                        auther_id: 'you',
-                        auther_name: 'react-nativer ( yourself )',
+                        auther_id: userProfile.id,
+                        auther_name: userProfile.name,
                         id: faker.random.alpha(20) + content,
                         content: content,
                         location: 'vancouver',
