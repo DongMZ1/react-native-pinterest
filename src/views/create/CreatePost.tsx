@@ -6,6 +6,7 @@ import { Asset, ImagePickerResponse, launchImageLibrary } from 'react-native-ima
 import EntypoIcon from 'react-native-vector-icons/Entypo'
 import { useAppDispatch, useAppSelector } from '../../redux/store'
 import { selectKeyboard, setModalContent } from '../../redux/slices/utilitySlice'
+import { createPost } from '../../service/postService/postService'
 export const CreatePost = () => {
     const navigation = useNavigation()
     const headerHeight = 50
@@ -59,6 +60,11 @@ export const CreatePost = () => {
             dispatch(setModalContent({content: 'Content Is Required!', alert: true}))
             return
         }
+        createPost({
+            title,
+            images: photos.map(each => each.uri+''),
+            content
+        })
         dispatch(setModalContent({content:'Posted!'}))
         navigation.goBack()
     }

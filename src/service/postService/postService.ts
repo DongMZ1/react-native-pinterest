@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { store } from "../../redux/store";
 import { addPosts } from "../../redux/slices/postsSlice";
 import { PostType } from "../../types/posts";
+import { userProfile } from "../../utility/constants/constants";
 export const getAllPosts = async ({ pageNum, filter, type }: { pageNum: number; filter?: { key: string; value: string; }[] | undefined; type: 'fasion' | 'nightLife'}) => {
     const res = await getAllPostsApi({ pageNum, filter, type })
     return res
@@ -20,10 +21,10 @@ export const createPost = async ({title, content, images}: {
         content: content,
         images,
         id: uuidv4(),
-        auther_name: faker.name.fullName(),
+        auther_name: userProfile.name,
         auther_id: uuidv4(),
         auther_image_url: faker.image.people(500, 500, true),
-        location: faker.address.city(),
+        location: 'vancouver',
         collected: false,
         distance_from_user: Math.trunc(Math.random() * 100),
         comments: []
